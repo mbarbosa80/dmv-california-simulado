@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>California DMV Practice Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@700;800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column, like the DMV touchscreen kiosk. One question per screen, big tap targets. */
+:root{
+  --bg:#f1f4f8; --surface:#ffffff; --ink:#14213d; --muted:#586479; --line:#d5dbe5;
+  --accent:#1f4e9d; --accent-ink:#ffffff; --accent-soft:#e6eefb;
+  --good:#17794a; --good-bg:#e2f4ea; --bad:#b3261e; --bad-bg:#fbe9e7;
+  --display:"Overpass","Arial Narrow",Arial,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1422; --surface:#182036; --ink:#e9edf5; --muted:#9ca8bf; --line:#2c3654;
+    --accent:#86adff; --accent-ink:#0b1220; --accent-soft:#1d2b4d;
+    --good:#62d59c; --good-bg:#12382a; --bad:#ff8f85; --bad-bg:#42211e;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1422; --surface:#182036; --ink:#e9edf5; --muted:#9ca8bf; --line:#2c3654;
+  --accent:#86adff; --accent-ink:#0b1220; --accent-soft:#1d2b4d;
+  --good:#62d59c; --good-bg:#12382a; --bad:#ff8f85; --bad-bg:#42211e;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:700px;margin:0 auto;padding:0 16px 56px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;border-bottom:2px solid var(--ink)}
+.brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:.02em;text-transform:uppercase;background:none;border:0;padding:0;text-align:left}
+.brand small{display:block;font-family:var(--body);font-weight:400;font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0}
+.ghost{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.86rem;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0;text-wrap:balance}
+p{margin:0}
+.pt{display:block;font-size:.8em;color:var(--muted);font-weight:400;margin-top:3px}
+body.nopt .pt{display:none}
+.lead{color:var(--muted);max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.facts div{padding:12px 10px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.facts div:first-child{border-left:0}
+.facts b{font-family:var(--display);font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums}
+.facts span{font-size:.76rem;color:var(--muted);line-height:1.3}
+@media (max-width:480px){.facts{grid-template-columns:repeat(2,1fr)}.facts div:nth-child(3){border-left:0}.facts div:nth-child(n+3){border-top:1px solid var(--line)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.field>.lab{font-weight:700;font-size:.9rem}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{flex:1 1 150px;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem;line-height:1.3}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.seg button small{display:block;color:var(--muted);font-size:.78rem}
+.cta{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:15px 18px;font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:.01em;width:100%}
+.cta small{display:block;font-family:var(--body);font-weight:400;font-size:.78rem;opacity:.85}
+.cta[disabled]{opacity:.45;cursor:not-allowed}
+.cta .pt{color:inherit;opacity:.85}
+.second{background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:12px;padding:12px 16px;font-weight:700;width:100%}
+.second small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 200px}
+.note{font-size:.84rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+/* quiz */
+.status{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:.9rem;font-variant-numeric:tabular-nums}
+.status b{font-family:var(--display);font-size:1.05rem}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.chip{align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sign{align-self:center;background:#e9edf2;border-radius:12px;padding:10px;line-height:0}
+.sign svg{width:132px;height:132px;max-width:100%}
+.qtext{font-size:1.22rem;font-weight:700;line-height:1.35;margin:0}
+.qtext .pt{font-size:.72em;margin-top:6px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:13px 14px;width:100%;line-height:1.4}
+.opt .k{flex:0 0 30px;height:30px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.9rem;color:var(--muted)}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .k{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.right .k{background:var(--good);border-color:var(--good);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt[disabled]{cursor:default;color:var(--ink)}
+.fb{border-left:5px solid var(--good);background:var(--good-bg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:.94rem}
+.fb.bad{border-color:var(--bad);background:var(--bad-bg)}
+.fb b{display:block}
+.actions{display:flex;gap:10px;align-items:stretch}
+.actions .cta{flex:1}
+.actions .ghost{flex:0 0 auto;font-size:.95rem;padding:0 16px;border-width:2px;border-radius:12px}
+/* results */
+.score{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.score .n{font-family:var(--display);font-weight:800;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.score .n span{font-size:1.5rem;color:var(--muted)}
+.verdict{font-family:var(--display);font-weight:800;font-size:1.3rem;padding:6px 16px;border-radius:10px}
+.verdict.good{background:var(--good);color:var(--surface)}
+.verdict.bad{background:var(--bad);color:var(--surface)}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 18px;font-size:.86rem}
+.cats div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted var(--line);padding:3px 0}
+.cats b.miss{color:var(--bad)}
+.rev{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-top:1px solid var(--line)}
+.rev:first-of-type{border-top:0;padding-top:0}
+.rev .q{font-weight:700}
+.rev .a{font-size:.93rem;padding-left:12px;border-left:4px solid var(--line)}
+.rev .a.ok{border-color:var(--good)}
+.rev .a.no{border-color:var(--bad)}
+.rev .a i{font-style:normal;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:block}
+.rev .sign svg{width:84px;height:84px}
+.rev .sign{align-self:flex-start;padding:6px}
+footer{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="brand" id="home" type="button">California DMV Practice Test<small>Simulado da prova teórica · Class C</small></button>
+    <button class="ghost" id="ptToggle" type="button" aria-pressed="true">PT on</button>
+  </div>
+  <main id="app" class="wrap" style="padding:0;gap:18px"></main>
+  <footer>
+    Unofficial study tool. Questions are original, written from the rules in the official
+    <a href="https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/">California Driver's Handbook</a>;
+    they are not the DMV's actual exam questions. Also practice with the
+    <a href="https://www.dmv.ca.gov/portal/driver-education-and-safety/educational-materials/sample-driver-license-dl-knowledge-tests/">official DMV sample tests</a>.
+    <span class="pt">(Ferramenta de estudo não oficial. As questões são originais, escritas a partir das regras do handbook oficial; não são as questões reais da prova.)</span>
+  </footer>
+</div>
+<script>
+"use strict";
+const Q=[];
+/*__QUESTIONS__*/
+
+// ---------- data ----------
+function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)}
+const BANK=Q.map(r=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
+const QUOTA={signs:3,signals:2,row:3,speed:3,lanes:3,turns:2,parking:3,freeway:2,safe:5,weather:2,sharing:3,alcohol:2,belts:1,admin:2};
+const CAT={signs:["Traffic signs","Placas"],signals:["Traffic signals","Semáforos"],row:["Right-of-way","Preferência"],speed:["Speed limits","Velocidade"],
+  lanes:["Lanes and markings","Faixas e marcações"],turns:["Turns","Conversões"],parking:["Parking","Estacionamento"],freeway:["Freeways and passing","Freeway e ultrapassagem"],
+  safe:["Safe driving","Direção segura"],weather:["Weather and night","Clima e noite"],sharing:["Sharing the road","Dividindo a via"],
+  alcohol:["Alcohol and drugs","Álcool e drogas"],belts:["Seat belts and children","Cinto e crianças"],admin:["DMV rules and collisions","Regras do DMV e colisões"]};
+const TOTAL=36, PASS=30;
+
+// ---------- storage (works without it) ----------
+const mem={};
+function load(k,d){try{const v=localStorage.getItem("dmvca."+k);if(v!==null)return JSON.parse(v)}catch(e){}return k in mem?mem[k]:d}
+function save(k,v){mem[k]=v;try{localStorage.setItem("dmvca."+k,JSON.stringify(v))}catch(e){}}
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const app=$("#app");
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function bi(en,pt){return esc(en)+'<span class="pt">('+esc(pt)+')</span>'}
+function clock(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+
+// ---------- test building ----------
+function take(pool,n,seen){
+  let out=shuffle(pool.filter(q=>!seen.has(q.id))).slice(0,n);
+  if(out.length<n){ // every question in this group has been used: start the group over
+    pool.forEach(q=>seen.delete(q.id));
+    out=out.concat(shuffle(pool.filter(q=>!out.includes(q))).slice(0,n-out.length));
+  }
+  return out;
+}
+function buildTest(){
+  const seen=new Set(load("seen",[]));let t=[];
+  for(const c in QUOTA){
+    const pool=BANK.filter(q=>q.c===c),n=QUOTA[c];
+    const tag=c==="alcohol"?"bac":c==="admin"?"sale":null;
+    if(tag){ // the DMV form always carries one BAC question and one vehicle-sale question
+      t=t.concat(take(pool.filter(q=>q.t===tag),1,seen),take(pool.filter(q=>q.t!==tag),n-1,seen));
+    }else t=t.concat(take(pool,n,seen));
+  }
+  t.forEach(q=>seen.add(q.id));save("seen",[...seen]);
+  return shuffle(t);
+}
+function wrap(list){return list.map(q=>({q,order:shuffle([0,1,2]),pick:null}))}
+
+// ---------- state ----------
+let prefs=Object.assign({mode:"practice",limit:0,pt:true},load("prefs",{}));
+let S=null,tick=null;
+function setPT(){document.body.classList.toggle("nopt",!prefs.pt);const b=$("#ptToggle");b.setAttribute("aria-pressed",prefs.pt);b.textContent=prefs.pt?"PT on":"PT off"}
+$("#ptToggle").onclick=()=>{prefs.pt=!prefs.pt;save("prefs",prefs);setPT()};
+$("#home").onclick=()=>{if(S&&!S.done){S.askQuit=true;renderQ()}else home()};
+
+// ---------- home ----------
+function home(){
+  stopClock();S=null;
+  const hist=load("history",[]),missed=load("missed",[]).filter(id=>BANK.some(q=>q.id===id)),seen=load("seen",[]).length;
+  const seg=(key,val,en,pt)=>'<button type="button" data-k="'+key+'" data-v="'+val+'" aria-pressed="'+(String(prefs[key])===String(val))+'">'+esc(en)+'<small class="pt">('+esc(pt)+')</small></button>';
+  app.innerHTML=
+  '<h1>Knowledge test simulator</h1>'+
+  '<p class="lead">Each test draws a new random set from a bank of '+BANK.length+' questions, in the same mix of topics as the DMV exam.'+
+    '<span class="pt">(Cada simulado sorteia um conjunto novo de um banco de '+BANK.length+' questões, na mesma proporção de temas da prova do DMV.)</span></p>'+
+  '<div class="facts">'+
+    '<div><b>'+TOTAL+'</b><span>questions<span class="pt">(questões)</span></span></div>'+
+    '<div><b>'+PASS+'</b><span>correct to pass<span class="pt">(acertos para passar)</span></span></div>'+
+    '<div><b>3</b><span>choices each<span class="pt">(alternativas)</span></span></div>'+
+    '<div><b>None</b><span>official time limit<span class="pt">(sem limite oficial de tempo)</span></span></div>'+
+  '</div>'+
+  '<div class="panel">'+
+    '<div class="field"><span class="lab">Mode<span class="pt">(Modo)</span></span><div class="seg">'+
+      seg("mode","practice","Practice: see the answer after each question","Treino: mostra a resposta após cada questão")+
+      seg("mode","exam","Exam: results only at the end","Prova: resultado só no final")+'</div></div>'+
+    '<div class="field"><span class="lab">Timer<span class="pt">(Tempo)</span></span><div class="seg">'+
+      seg("limit",0,"No limit, like the real test","Sem limite, como na prova real")+
+      seg("limit",30,"30 minutes","30 minutos")+
+      seg("limit",20,"20 minutes","20 minutos")+'</div></div>'+
+    '<button class="cta" id="start" type="button">Start a new test<small class="pt">(Iniciar novo simulado)</small></button>'+
+    (missed.length?'<button class="second" id="review" type="button">Practice the '+missed.length+' question'+(missed.length>1?'s':'')+' you missed<small class="pt">(Treinar as questões que você errou)</small></button>':'')+
+    '<p class="note">You have seen '+Math.min(seen,BANK.length)+' of '+BANK.length+' questions. New tests use the ones you have not seen first.'+
+      '<span class="pt">(Você já viu '+Math.min(seen,BANK.length)+' de '+BANK.length+' questões. Os novos simulados usam primeiro as que você ainda não viu.)</span></p>'+
+  '</div>'+
+  (hist.length?'<div class="panel"><h2>Your tests<span class="pt">(Seus simulados)</span></h2><table><thead><tr><th>#</th><th>Score</th><th>Result</th><th>Time</th><th>Mode</th></tr></thead><tbody>'+
+    hist.slice(-8).reverse().map(h=>'<tr><td>'+h.n+'</td><td>'+h.score+'/'+h.total+'</td><td><span class="pill '+(h.pass?'good':'bad')+'">'+(h.pass?'PASS':'FAIL')+'</span></td><td>'+clock(h.secs)+'</td><td>'+esc(h.mode)+'</td></tr>').join("")+
+    '</tbody></table></div>':'');
+  app.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;prefs[k]=k==="limit"?+b.dataset.v:b.dataset.v;save("prefs",prefs);home()});
+  $("#start").onclick=()=>start(wrap(buildTest()),false);
+  const r=$("#review");if(r)r.onclick=()=>start(wrap(shuffle(BANK.filter(q=>missed.includes(q.id))).slice(0,TOTAL)),true);
+  window.scrollTo(0,0);
+}
+
+// ---------- quiz ----------
+function start(items,review){
+  S={items,pos:0,mode:review?"practice":prefs.mode,review,limit:review?0:prefs.limit*60,t0:Date.now(),done:false,askQuit:false};
+  stopClock();tick=setInterval(updClock,500);renderQ();
+}
+function stopClock(){if(tick){clearInterval(tick);tick=null}}
+function elapsed(){return (Date.now()-S.t0)/1000}
+function updClock(){
+  if(!S||S.done)return;
+  const el=$("#clock");const e=elapsed();
+  if(S.limit){const left=S.limit-e;if(el)el.textContent=clock(left)+" left";if(left<=0)finish()}
+  else if(el)el.textContent=clock(e);
+}
+function renderQ(){
+  const it=S.items[S.pos],q=it.q,n=S.items.length,answered=it.pick!==null;
+  const reveal=S.mode==="practice"&&answered;
+  const wrongSoFar=S.items.filter(x=>x.pick!==null&&x.pick!==0).length;
+  const letters=["A","B","C"];
+  let h='<div class="status"><b>Question '+(S.pos+1)+' of '+n+'</b><span>'+
+    (S.mode==="practice"?'Missed '+wrongSoFar+(S.review?'':' · '+(n-PASS)+' allowed')+' &nbsp;|&nbsp; ':'')+'<span id="clock"></span></span></div>'+
+    '<div class="bar"><i style="width:'+(100*S.pos/n)+'%"></i></div>'+
+    '<span class="chip">'+esc(CAT[q.c][0])+' · '+esc(CAT[q.c][1])+'</span>'+
+    (q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+
+    '<p class="qtext">'+bi(q.q,q.qp)+'</p><div class="opts">';
+  it.order.forEach((oi,k)=>{
+    let cls="opt";
+    if(reveal){if(oi===0)cls+=" right";else if(oi===it.pick)cls+=" wrong"}
+    else if(it.pick===oi)cls+=" sel";
+    h+='<button type="button" class="'+cls+'" data-o="'+oi+'"'+(reveal?' disabled':'')+'><span class="k">'+letters[k]+'</span><span>'+bi(q.opts[oi][0],q.opts[oi][1])+'</span></button>';
+  });
+  h+='</div>';
+  if(reveal){
+    const ok=it.pick===0;
+    h+='<div class="fb'+(ok?'':' bad')+'"><b>'+(ok?'Correct':'Incorrect')+(ok?' · Certo':' · Errado')+'</b>'+esc(q.e)+'</div>';
+  }
+  const last=S.pos===n-1;
+  h+='<div class="actions">'+
+    (S.mode==="exam"&&!last?'<button class="ghost" id="skip" type="button">Skip<span class="pt">(Pular)</span></button>':'')+
+    '<button class="cta" id="next" type="button"'+(answered?'':' disabled')+'>'+(last?'Finish test':'Next question')+'<small class="pt">('+(last?'Finalizar':'Próxima questão')+')</small></button></div>';
+  h+=S.askQuit
+    ?'<div class="panel"><p>Quit this test? Your answers will be lost.<span class="pt">(Sair deste simulado? Suas respostas serão perdidas.)</span></p><div class="row"><button class="second" id="quitYes" type="button">Yes, quit</button><button class="second" id="quitNo" type="button">Keep going</button></div></div>'
+    :'<button class="ghost" id="quit" type="button" style="align-self:flex-start">Quit test</button>';
+  app.innerHTML=h;updClock();
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(reveal)return;it.pick=+b.dataset.o;renderQ()});
+  $("#next").onclick=()=>{if(it.pick===null)return;if(last)finish();else{S.pos++;renderQ();window.scrollTo(0,0)}};
+  const sk=$("#skip");if(sk)sk.onclick=()=>{it.pick=null;S.items.push(S.items.splice(S.pos,1)[0]);renderQ();window.scrollTo(0,0)};
+  const qb=$("#quit");if(qb)qb.onclick=()=>{S.askQuit=true;renderQ()};
+  const qy=$("#quitYes");if(qy){qy.onclick=home;$("#quitNo").onclick=()=>{S.askQuit=false;renderQ()}}
+}
+document.addEventListener("keydown",e=>{
+  if(!S||S.done)return;
+  const k=e.key.toLowerCase(),i={"1":0,"2":1,"3":2,a:0,b:1,c:2}[k];
+  const btns=app.querySelectorAll(".opt");
+  if(i!==undefined&&btns[i]&&!btns[i].disabled)btns[i].click();
+  else if(k==="enter"){const n=$("#next");if(n&&!n.disabled&&document.activeElement.tagName!=="BUTTON")n.click()}
+});
+
+// ---------- results ----------
+function finish(){
+  if(!S||S.done)return;S.done=true;stopClock();
+  const secs=elapsed(),n=S.items.length,score=S.items.filter(x=>x.pick===0).length;
+  const need=S.review?n:PASS,pass=!S.review&&score>=PASS;
+  let missed=new Set(load("missed",[]));
+  S.items.forEach(x=>{if(x.pick===0)missed.delete(x.q.id);else missed.add(x.q.id)});
+  save("missed",[...missed]);
+  if(!S.review){const hist=load("history",[]);hist.push({n:hist.length+1,score,total:n,pass,secs:Math.round(secs),mode:S.mode});save("history",hist.slice(-40))}
+  const wrong=S.items.filter(x=>x.pick!==0);
+  const byCat={};S.items.forEach(x=>{const c=byCat[x.q.c]||(byCat[x.q.c]=[0,0]);c[1]++;if(x.pick===0)c[0]++});
+  let h='<h1>'+(S.review?'Review finished':'Test results')+'<span class="pt" style="font-family:var(--body)">('+(S.review?'Revisão concluída':'Resultado do simulado')+')</span></h1>'+
+    '<div class="panel"><div class="score"><div class="n">'+score+'<span>/'+n+'</span></div>'+
+    (S.review?'':'<span class="verdict '+(pass?'good':'bad')+'">'+(pass?'PASS · APROVADO':'FAIL · REPROVADO')+'</span>')+'</div>'+
+    '<p class="note">'+(S.review?'':'You needed '+need+' correct. You missed '+(n-score)+'; the limit is '+(n-PASS)+'. ')+'Time: '+clock(secs)+'.'+
+    (S.review?'':'<span class="pt">(Eram necessários '+need+' acertos. Você errou '+(n-score)+'; o limite é '+(n-PASS)+'.)</span>')+'</p>'+
+    '<div class="cats">'+Object.keys(byCat).map(c=>'<div><span>'+esc(CAT[c][0])+'</span><b class="'+(byCat[c][0]<byCat[c][1]?'miss':'')+'">'+byCat[c][0]+'/'+byCat[c][1]+'</b></div>').join("")+'</div></div>'+
+    '<div class="row"><button class="cta" id="again" type="button">New test, new questions<small class="pt">(Novo simulado, novas questões)</small></button>'+
+    (wrong.length?'<button class="second" id="retry" type="button">Retry the '+wrong.length+' I missed<small class="pt">(Refazer as que errei)</small></button>':'')+'</div>';
+  if(wrong.length){
+    h+='<div class="panel"><h2>Questions to review<span class="pt">(Questões para revisar)</span></h2>';
+    wrong.forEach(x=>{const q=x.q;
+      h+='<div class="rev">'+(q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+'<div class="q">'+bi(q.q,q.qp)+'</div>'+
+        (x.pick===null?'<div class="a no"><i>Your answer</i>Not answered<span class="pt">(Não respondida)</span></div>':'<div class="a no"><i>Your answer</i>'+bi(q.opts[x.pick][0],q.opts[x.pick][1])+'</div>')+
+        '<div class="a ok"><i>Correct answer</i>'+bi(q.opts[0][0],q.opts[0][1])+'</div><p class="note">'+esc(q.e)+'</p></div>'});
+    h+='</div>';
+  }else h+='<div class="panel"><p>No mistakes on this one.<span class="pt">(Nenhum erro neste.)</span></p></div>';
+  app.innerHTML=h;
+  $("#again").onclick=()=>start(wrap(buildTest()),false);
+  const r=$("#retry");if(r)r.onclick=()=>start(wrap(shuffle(wrong.map(x=>x.q))),true);
+  window.scrollTo(0,0);
+}
+
+// ---------- road signs (standard US sign shapes, drawn inline) ----------
+function sign(id){
+  const Y="#f7c600",R="#c1121f",K="#111",W="#fff";
+  const svg=b=>'<svg viewBox="0 0 120 120" role="img" aria-label="Road sign" xmlns="http://www.w3.org/2000/svg" font-family="Overpass,Arial,sans-serif" font-weight="800" text-anchor="middle">'+b+'</svg>';
+  const dia=(inner,fill)=>'<rect x="22" y="22" width="76" height="76" rx="6" transform="rotate(45 60 60)" fill="'+(fill||Y)+'" stroke="'+K+'" stroke-width="3"/>'+inner;
+  const ban='<circle cx="60" cy="60" r="46" fill="none" stroke="'+R+'" stroke-width="10"/><line x1="27" y1="27" x2="93" y2="93" stroke="'+R+'" stroke-width="10"/>';
+  const plate='<rect x="8" y="8" width="104" height="104" rx="8" fill="'+W+'" stroke="'+K+'" stroke-width="3"/>';
+  switch(id){
+    case "stop":return svg('<polygon points="38,6 82,6 114,38 114,82 82,114 38,114 6,82 6,38" fill="'+R+'"/><polygon points="40,11 80,11 109,40 109,80 80,109 40,109 11,80 11,40" fill="none" stroke="'+W+'" stroke-width="3"/><text x="60" y="73" font-size="36" fill="'+W+'">STOP</text>');
+    case "yield":return svg('<polygon points="6,12 114,12 60,110" fill="'+R+'" stroke="'+R+'" stroke-width="6" stroke-linejoin="round"/><polygon points="30,26 90,26 60,82" fill="'+W+'"/><text x="60" y="46" font-size="15" fill="'+R+'">YIELD</text>');
+    case "dne":return svg('<rect x="4" y="4" width="112" height="112" rx="8" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><circle cx="60" cy="60" r="50" fill="'+R+'"/><rect x="22" y="51" width="76" height="18" fill="'+W+'"/><text x="60" y="42" font-size="15" fill="'+W+'">DO NOT</text><text x="60" y="92" font-size="15" fill="'+W+'">ENTER</text>');
+    case "wrongway":return svg('<rect x="6" y="26" width="108" height="68" rx="6" fill="'+R+'"/><rect x="10" y="30" width="100" height="60" rx="4" fill="none" stroke="'+W+'" stroke-width="3"/><text x="60" y="58" font-size="22" fill="'+W+'">WRONG</text><text x="60" y="82" font-size="22" fill="'+W+'">WAY</text>');
+    case "school":return svg('<polygon points="60,6 110,44 110,112 10,112 10,44" fill="#cfe600" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/><circle cx="47" cy="48" r="7" fill="'+K+'"/><path d="M47 56 L47 82 M47 62 L35 72 M47 62 L58 68 M47 82 L38 100 M47 82 L56 100" stroke="'+K+'" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="76" cy="58" r="6" fill="'+K+'"/><path d="M76 65 L76 84 M76 70 L66 76 M76 70 L86 77 M76 84 L69 100 M76 84 L84 100" stroke="'+K+'" stroke-width="5" stroke-linecap="round" fill="none"/>');
+    case "rrx":return svg('<circle cx="60" cy="60" r="54" fill="'+Y+'" stroke="'+K+'" stroke-width="4"/><path d="M24 24 L96 96 M96 24 L24 96" stroke="'+K+'" stroke-width="11"/><text x="27" y="70" font-size="26" fill="'+K+'">R</text><text x="93" y="70" font-size="26" fill="'+K+'">R</text>');
+    case "crossbuck":return svg('<g transform="rotate(35 60 60)"><rect x="2" y="50" width="116" height="20" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><text x="60" y="65" font-size="13" fill="'+K+'">CROSSING</text></g><g transform="rotate(-35 60 60)"><rect x="2" y="50" width="116" height="20" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><text x="60" y="65" font-size="13" fill="'+K+'">RAILROAD</text></g>');
+    case "signalahead":return svg(dia('<rect x="47" y="30" width="26" height="60" rx="5" fill="'+K+'"/><circle cx="60" cy="42" r="7" fill="#e3342f"/><circle cx="60" cy="60" r="7" fill="#f7c600"/><circle cx="60" cy="78" r="7" fill="#2fa84f"/>'));
+    case "merge":return svg(dia('<path d="M54 92 L54 38" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="54,24 42,42 66,42" fill="'+K+'"/><path d="M78 92 Q78 66 56 58" stroke="'+K+'" stroke-width="8" fill="none"/>'));
+    case "twoway":return svg(dia('<path d="M46 88 L46 44" stroke="'+K+'" stroke-width="8"/><polygon points="46,30 35,48 57,48" fill="'+K+'"/><path d="M74 32 L74 76" stroke="'+K+'" stroke-width="8"/><polygon points="74,90 63,72 85,72" fill="'+K+'"/>'));
+    case "curve":return svg(dia('<path d="M50 94 L50 66 Q50 48 70 42" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="86,36 66,30 72,52" fill="'+K+'"/>'));
+    case "tee":return svg(dia('<path d="M32 46 L88 46" stroke="'+K+'" stroke-width="13"/><path d="M60 46 L60 92" stroke="'+K+'" stroke-width="13"/>'));
+    case "cross":return svg(dia('<path d="M30 60 L90 60 M60 30 L60 90" stroke="'+K+'" stroke-width="13"/>'));
+    case "pedx":return svg(dia('<circle cx="60" cy="36" r="7" fill="'+K+'"/><path d="M60 44 L58 68 M59 50 L46 60 M59 50 L72 58 M58 68 L48 90 M58 68 L70 88" stroke="'+K+'" stroke-width="6.5" stroke-linecap="round" fill="none"/>'));
+    case "roadwork":return svg(dia('<text x="60" y="50" font-size="17" fill="'+K+'">ROAD</text><text x="60" y="68" font-size="17" fill="'+K+'">WORK</text><text x="60" y="86" font-size="17" fill="'+K+'">AHEAD</text>',"#f58220"));
+    case "nouturn":return svg(plate+'<path d="M46 88 L46 54 Q46 36 60 36 Q74 36 74 54 L74 62" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="74,80 62,60 86,60" fill="'+K+'"/>'+ban);
+    case "noleft":return svg(plate+'<path d="M72 90 L72 56 L48 56" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="30,56 50,43 50,69" fill="'+K+'"/>'+ban);
+    case "oneway":return svg('<rect x="4" y="34" width="112" height="52" rx="5" fill="'+K+'"/><polygon points="12,48 84,48 84,40 110,60 84,80 84,72 12,72" fill="'+W+'"/><text x="50" y="66" font-size="15" fill="'+K+'">ONE WAY</text>');
+    case "smv":return svg('<polygon points="60,10 112,104 8,104" fill="#8f1d14" stroke="#8f1d14" stroke-width="6" stroke-linejoin="round"/><polygon points="60,38 90,92 30,92" fill="#ff6a13"/>');
+  }
+  return "";
+}
+
+setPT();home();
+</script>
+</body>
+</html>

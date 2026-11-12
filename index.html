@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>California DMV Practice Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@700;800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one narrow column, like the DMV touchscreen kiosk. One question per screen, big tap targets. */
+:root{
+  --bg:#f1f4f8; --surface:#ffffff; --ink:#14213d; --muted:#586479; --line:#d5dbe5;
+  --accent:#1f4e9d; --accent-ink:#ffffff; --accent-soft:#e6eefb;
+  --good:#17794a; --good-bg:#e2f4ea; --bad:#b3261e; --bad-bg:#fbe9e7;
+  --display:"Overpass","Arial Narrow",Arial,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1422; --surface:#182036; --ink:#e9edf5; --muted:#9ca8bf; --line:#2c3654;
+    --accent:#86adff; --accent-ink:#0b1220; --accent-soft:#1d2b4d;
+    --good:#62d59c; --good-bg:#12382a; --bad:#ff8f85; --bad-bg:#42211e;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1422; --surface:#182036; --ink:#e9edf5; --muted:#9ca8bf; --line:#2c3654;
+  --accent:#86adff; --accent-ink:#0b1220; --accent-soft:#1d2b4d;
+  --good:#62d59c; --good-bg:#12382a; --bad:#ff8f85; --bad-bg:#42211e;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:700px;margin:0 auto;padding:0 16px 56px;display:flex;flex-direction:column;gap:18px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;border-bottom:2px solid var(--ink)}
+.brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:.02em;text-transform:uppercase;background:none;border:0;padding:0;text-align:left}
+.brand small{display:block;font-family:var(--body);font-weight:400;font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0}
+.ghost{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.86rem;color:var(--muted)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0;text-wrap:balance}
+p{margin:0}
+.pt{display:block;font-size:.8em;color:var(--muted);font-weight:400;margin-top:3px}
+body.nopt .pt{display:none}
+.lead{color:var(--muted);max-width:60ch}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.facts div{padding:12px 10px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.facts div:first-child{border-left:0}
+.facts b{font-family:var(--display);font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums}
+.facts span{font-size:.76rem;color:var(--muted);line-height:1.3}
+@media (max-width:480px){.facts{grid-template-columns:repeat(2,1fr)}.facts div:nth-child(3){border-left:0}.facts div:nth-child(n+3){border-top:1px solid var(--line)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.field>.lab{font-weight:700;font-size:.9rem}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{flex:1 1 150px;text-align:left;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem;line-height:1.3}
+.seg button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.seg button small{display:block;color:var(--muted);font-size:.78rem}
+.cta{background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:15px 18px;font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:.01em;width:100%}
+.cta small{display:block;font-family:var(--body);font-weight:400;font-size:.78rem;opacity:.85}
+.cta[disabled]{opacity:.45;cursor:not-allowed}
+.cta .pt{color:inherit;opacity:.85}
+.second{background:var(--surface);color:var(--ink);border:2px solid var(--ink);border-radius:12px;padding:12px 16px;font-weight:700;width:100%}
+.second small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 200px}
+.note{font-size:.84rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:700}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+/* quiz */
+.status{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:.9rem;font-variant-numeric:tabular-nums}
+.status b{font-family:var(--display);font-size:1.05rem}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.chip{align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sign{align-self:center;background:#e9edf2;border-radius:12px;padding:10px;line-height:0}
+.sign svg{width:132px;height:132px;max-width:100%}
+.qtext{font-size:1.22rem;font-weight:700;line-height:1.35;margin:0}
+.qtext .pt{font-size:.72em;margin-top:6px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:13px 14px;width:100%;line-height:1.4}
+.opt .k{flex:0 0 30px;height:30px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:.9rem;color:var(--muted)}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.sel .k{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.right .k{background:var(--good);border-color:var(--good);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt[disabled]{cursor:default;color:var(--ink)}
+.fb{border-left:5px solid var(--good);background:var(--good-bg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:.94rem}
+.fb.bad{border-color:var(--bad);background:var(--bad-bg)}
+.fb b{display:block}
+.actions{display:flex;gap:10px;align-items:stretch}
+.actions .cta{flex:1}
+.actions .ghost{flex:0 0 auto;font-size:.95rem;padding:0 16px;border-width:2px;border-radius:12px}
+/* results */
+.score{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.score .n{font-family:var(--display);font-weight:800;font-size:3.4rem;line-height:1;font-variant-numeric:tabular-nums}
+.score .n span{font-size:1.5rem;color:var(--muted)}
+.verdict{font-family:var(--display);font-weight:800;font-size:1.3rem;padding:6px 16px;border-radius:10px}
+.verdict.good{background:var(--good);color:var(--surface)}
+.verdict.bad{background:var(--bad);color:var(--surface)}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 18px;font-size:.86rem}
+.cats div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dotted var(--line);padding:3px 0}
+.cats b.miss{color:var(--bad)}
+.rev{display:flex;flex-direction:column;gap:6px;padding:14px 0;border-top:1px solid var(--line)}
+.rev:first-of-type{border-top:0;padding-top:0}
+.rev .q{font-weight:700}
+.rev .a{font-size:.93rem;padding-left:12px;border-left:4px solid var(--line)}
+.rev .a.ok{border-color:var(--good)}
+.rev .a.no{border-color:var(--bad)}
+.rev .a i{font-style:normal;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:block}
+.rev .sign svg{width:84px;height:84px}
+.rev .sign{align-self:flex-start;padding:6px}
+footer{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="brand" id="home" type="button">California DMV Practice Test<small>Simulado da prova teórica · Class C</small></button>
+    <button class="ghost" id="ptToggle" type="button" aria-pressed="true">PT on</button>
+  </div>
+  <main id="app" class="wrap" style="padding:0;gap:18px"></main>
+  <footer>
+    Unofficial study tool. Questions are original, written from the rules in the official
+    <a href="https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/">California Driver's Handbook</a>;
+    they are not the DMV's actual exam questions. Also practice with the
+    <a href="https://www.dmv.ca.gov/portal/driver-education-and-safety/educational-materials/sample-driver-license-dl-knowledge-tests/">official DMV sample tests</a>.
+    <span class="pt">(Ferramenta de estudo não oficial. As questões são originais, escritas a partir das regras do handbook oficial; não são as questões reais da prova.)</span>
+  </footer>
+</div>
+<script>
+"use strict";
+const Q=[];
+// Format: [category, EN question, PT question, [EN correct, PT], [EN wrong, PT], [EN wrong, PT], PT explanation, {s: signId, t: tag}]
+// The correct answer is always the FIRST option here; the app shuffles options on screen.
+Q.push(
+// ---------------- SIGNS ----------------
+["signs","What must you do when you come to this sign?","O que você deve fazer ao chegar a esta placa?",
+ ["Make a full stop before the limit line, crosswalk, or intersection, then go when it is safe.","Parar completamente antes da linha de retenção, da faixa de pedestres ou do cruzamento e seguir quando for seguro."],
+ ["Slow down and continue without stopping if no traffic is coming.","Reduzir a velocidade e seguir sem parar se não vier ninguém."],
+ ["Stop only if other vehicles or pedestrians are already in the intersection.","Parar somente se já houver veículos ou pedestres no cruzamento."],
+ "Placa de STOP (octógono vermelho): parada total sempre, mesmo sem trânsito. 'Rolling stop' é infração.",{s:"stop"}],
+["signs","What does this sign tell you to do?","O que esta placa manda você fazer?",
+ ["Slow down and be ready to stop so that other traffic, bicyclists, and pedestrians can go first.","Reduzir a velocidade e estar pronto para parar, dando passagem a outros veículos, ciclistas e pedestres."],
+ ["Always come to a complete stop, even when the way is clear.","Sempre parar completamente, mesmo com o caminho livre."],
+ ["Keep your speed because you have the right-of-way.","Manter a velocidade porque a preferência é sua."],
+ "YIELD (triângulo vermelho e branco): dê a preferência. Só é obrigatório parar se for necessário para deixar os outros passarem.",{s:"yield"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["You may not enter this road because traffic is coming toward you.","Você não pode entrar nesta via porque o trânsito vem na sua direção."],
+ ["The road ahead is closed only to trucks and buses.","A via à frente está fechada apenas para caminhões e ônibus."],
+ ["You must stop here and then you may continue straight.","Você deve parar aqui e depois pode seguir em frente."],
+ "DO NOT ENTER: contramão. Normalmente aparece em saídas de freeway e ruas de mão única.",{s:"dne"}],
+["signs","You are driving and see this sign facing you. What should you do?","Você está dirigindo e vê esta placa virada para você. O que deve fazer?",
+ ["You are going against traffic. When it is safe, back out or turn around.","Você está na contramão. Quando for seguro, dê ré ou faça o retorno."],
+ ["Keep driving carefully until the next intersection, then turn.","Seguir com cuidado até o próximo cruzamento e então virar."],
+ ["Move to the right lane and continue at a lower speed.","Passar para a faixa da direita e seguir mais devagar."],
+ "WRONG WAY: você entrou na contramão. Saia assim que for seguro, dando ré ou retornando.",{s:"wrongway"}],
+["signs","At night, the road reflectors ahead shine red in your headlights. What does this mean?","À noite, os refletores da pista à frente brilham em vermelho nos seus faróis. O que isso significa?",
+ ["You are driving the wrong way on the road.","Você está dirigindo na contramão."],
+ ["You are getting close to a school zone.","Você está chegando a uma zona escolar."],
+ ["The lane you are in is about to end.","A faixa em que você está vai terminar."],
+ "Refletores vermelhos de frente para você indicam contramão.",{}],
+["signs","What does a five-sided sign like this one mean?","O que significa uma placa de cinco lados como esta?",
+ ["You are near a school. Drive slowly and stop for children in the crosswalk.","Você está perto de uma escola. Dirija devagar e pare para crianças na faixa."],
+ ["You are near a hospital. Do not use your horn.","Você está perto de um hospital. Não use a buzina."],
+ ["A playground is closed ahead and the road is blocked.","Um parquinho está fechado à frente e a via está bloqueada."],
+ "A placa pentagonal (cinco lados) é exclusiva de área escolar.",{s:"school"}],
+["signs","What does this round yellow sign mean?","O que significa esta placa amarela redonda?",
+ ["A railroad crossing is ahead. Look, listen, slow down, and be ready to stop.","Há um cruzamento ferroviário à frente. Olhe, escute, reduza e esteja pronto para parar."],
+ ["A roundabout is ahead. Speed up to merge.","Há uma rotatória à frente. Acelere para entrar."],
+ ["A rest area is ahead on the right.","Há uma área de descanso à frente, à direita."],
+ "Placa redonda amarela com X e RR: aviso antecipado de cruzamento de trem.",{s:"rrx"}],
+["signs","What should you do when you see this X-shaped sign?","O que você deve fazer ao ver esta placa em forma de X?",
+ ["Look and listen for a train, slow down, and be ready to stop. Trains go first.","Olhar e escutar se vem trem, reduzir e estar pronto para parar. O trem tem preferência."],
+ ["Stop only if the crossing also has a traffic officer.","Parar somente se também houver um agente de trânsito no cruzamento."],
+ ["Cross quickly, because trains always sound a horn first.","Cruzar rápido, porque o trem sempre buzina antes."],
+ "O 'crossbuck' (X branco) fica no próprio cruzamento ferroviário. Espere um trem em qualquer trilho, a qualquer hora.",{s:"crossbuck"}],
+["signs","What does this sign warn you about?","Sobre o que esta placa avisa?",
+ ["A traffic signal is ahead. Be ready to stop.","Há um semáforo à frente. Esteja pronto para parar."],
+ ["The traffic signal ahead is not working.","O semáforo à frente está quebrado."],
+ ["You must stop here and wait for a green light.","Você deve parar aqui e esperar o sinal verde."],
+ "Losango amarelo com semáforo: aviso de sinal à frente.",{s:"signalahead"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["Traffic from another road will be merging into your lane.","Veículos de outra via vão entrar (convergir) na sua faixa."],
+ ["Your lane ends and you must stop.","Sua faixa termina e você deve parar."],
+ ["The road ahead is divided by a barrier.","A via à frente é dividida por uma barreira."],
+ "Placa de 'merge': trânsito convergindo. Ajuste a velocidade e abra espaço.",{s:"merge"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["Two-way traffic is ahead.","Há trânsito nos dois sentidos à frente."],
+ ["A one-way street begins ahead.","Uma rua de mão única começa à frente."],
+ ["Passing is allowed in both lanes.","É permitido ultrapassar nas duas faixas."],
+ "Duas setas em sentidos opostos: a via passa a ter mão dupla.",{s:"twoway"}],
+["signs","What does this sign tell you?","O que esta placa informa?",
+ ["The road curves to the right ahead. Slow down.","A via faz curva à direita à frente. Reduza."],
+ ["You must turn right at the next street.","Você é obrigado a virar à direita na próxima rua."],
+ ["Only the right lane may continue ahead.","Somente a faixa da direita pode seguir."],
+ "Losango amarelo com seta curva: aviso de curva. Reduza antes de entrar nela.",{s:"curve"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["The road you are on ends ahead. You must turn left or right.","A via em que você está termina à frente. Você terá de virar à esquerda ou à direita."],
+ ["A bridge is ahead and trucks are not allowed.","Há uma ponte à frente e caminhões não são permitidos."],
+ ["You are entering a one-way street.","Você está entrando em uma rua de mão única."],
+ "Interseção em T: a via termina. Quem está na via principal (transversal) tem preferência.",{s:"tee"}],
+["signs","What does this sign warn you about?","Sobre o que esta placa avisa?",
+ ["Another road crosses yours ahead. Watch for cross traffic.","Outra via cruza a sua à frente. Atenção ao trânsito transversal."],
+ ["A hospital is ahead on the right.","Há um hospital à frente, à direita."],
+ ["A railroad crosses the road ahead.","Uma ferrovia cruza a via à frente."],
+ "Losango amarelo com cruz: cruzamento à frente.",{s:"cross"}],
+["signs","What do orange signs like this one mean?","O que significam placas laranja como esta?",
+ ["Road work is ahead. Slow down and watch for workers and equipment.","Há obras na via à frente. Reduza e fique atento a trabalhadores e máquinas."],
+ ["A scenic area is ahead. You may stop on the shoulder.","Há uma área panorâmica à frente. Você pode parar no acostamento."],
+ ["A school zone is ahead. The limit is 15 mph.","Há uma zona escolar à frente. O limite é 15 mph."],
+ "Laranja = obras/manutenção. Multas costumam ser dobradas em zonas de obras.",{s:"roadwork"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["You may not make a U-turn here.","Você não pode fazer retorno (U-turn) aqui."],
+ ["You may make a U-turn only on a green arrow.","Você só pode fazer retorno com seta verde."],
+ ["The road ahead curves back sharply.","A via à frente faz uma curva fechada."],
+ "Círculo vermelho com barra sobre o símbolo: a manobra mostrada é proibida.",{s:"nouturn"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["Traffic on this street moves only in the direction of the arrow.","O trânsito nesta rua segue apenas no sentido da seta."],
+ ["You must turn in the direction of the arrow at the next corner.","Você deve virar no sentido da seta na próxima esquina."],
+ ["Parking is allowed only on the side the arrow points to.","Só é permitido estacionar do lado para o qual a seta aponta."],
+ "ONE WAY: rua de mão única.",{s:"oneway"}],
+["signs","A vehicle ahead of you displays this orange and red triangle. What does it mean?","Um veículo à sua frente exibe este triângulo laranja e vermelho. O que significa?",
+ ["It is a slow-moving vehicle that usually travels at 25 mph or less.","É um veículo lento, que normalmente anda a 25 mph ou menos."],
+ ["It is carrying hazardous materials and must stop at railroad tracks.","Ele transporta carga perigosa e deve parar nos trilhos."],
+ ["It is an emergency vehicle and you must pull over.","É um veículo de emergência e você deve encostar."],
+ "Triângulo laranja com borda vermelha = veículo lento (trator, carroça etc.). Reduza ao se aproximar.",{s:"smv"}],
+["signs","What does this sign warn you about?","Sobre o que esta placa avisa?",
+ ["Pedestrians may be crossing ahead. Slow down and be ready to stop.","Pode haver pedestres atravessando à frente. Reduza e esteja pronto para parar."],
+ ["Only pedestrians may use the road ahead.","Somente pedestres podem usar a via à frente."],
+ ["Pedestrians must yield to vehicles at this location.","Os pedestres devem dar preferência aos veículos neste local."],
+ "Aviso de travessia de pedestres.",{s:"pedx"}],
+["signs","What does this sign mean?","O que esta placa significa?",
+ ["You may not turn left at this intersection.","Você não pode virar à esquerda neste cruzamento."],
+ ["Left turns are allowed only after a full stop.","Virar à esquerda só é permitido após parada total."],
+ ["The left lane ends ahead.","A faixa da esquerda termina à frente."],
+ "Círculo vermelho com barra sobre a seta à esquerda: proibido virar à esquerda.",{s:"noleft"}],
+["signs","What does an eight-sided red sign mean?","O que significa uma placa vermelha de oito lados?",
+ ["Stop.","Pare."],
+ ["Yield.","Dê a preferência."],
+ ["Do not enter.","Não entre."],
+ "Só a placa de STOP tem oito lados.",{}],
+["signs","What does a three-sided red and white sign mean?","O que significa uma placa vermelha e branca de três lados?",
+ ["Yield the right-of-way.","Dê a preferência."],
+ ["Come to a full stop every time.","Pare completamente sempre."],
+ ["No passing is allowed.","É proibido ultrapassar."],
+ "O triângulo invertido é a placa YIELD.",{}],
+["signs","What do white rectangular signs with black letters, such as speed limit signs, tell you?","O que informam as placas retangulares brancas com letras pretas, como as de limite de velocidade?",
+ ["Important rules that you must obey.","Regras importantes que você é obrigado a cumprir."],
+ ["Suggestions that apply only in bad weather.","Sugestões que valem apenas com tempo ruim."],
+ ["Directions to services such as gas and food.","Indicações de serviços como combustível e alimentação."],
+ "Retângulo branco = placa de regulamentação (regra obrigatória).",{}],
+["signs","What do yellow diamond-shaped signs do?","Para que servem as placas amarelas em forma de losango?",
+ ["They warn you about road conditions and dangers ahead.","Avisam sobre condições da via e perigos à frente."],
+ ["They show the speed limit that the law requires.","Mostram o limite de velocidade exigido por lei."],
+ ["They mark places where parking is allowed.","Marcam locais onde é permitido estacionar."],
+ "Losango amarelo = advertência.",{}],
+["signs","What does a red circle with a red line through it always mean?","O que significa sempre um círculo vermelho com uma barra vermelha?",
+ ["No. The action shown on the sign is not allowed.","Não. A ação mostrada na placa é proibida."],
+ ["Caution. The action shown is allowed if you slow down.","Cuidado. A ação mostrada é permitida se você reduzir."],
+ ["Stop. Wait here for a green light.","Pare. Espere aqui o sinal verde."],
+ "Círculo vermelho com barra = proibição.",{}],
+["signs","At a railroad crossing, what are the blue and white signs for?","Em um cruzamento ferroviário, para que servem as placas azuis e brancas?",
+ ["They tell you what to do in an emergency on or near the tracks, such as a stalled vehicle.","Informam o que fazer em uma emergência nos trilhos ou perto deles, como um veículo enguiçado."],
+ ["They tell you the train schedule for that crossing.","Informam o horário dos trens naquele cruzamento."],
+ ["They mark parking spaces for railroad workers.","Marcam vagas de estacionamento para ferroviários."],
+ "A placa azul e branca traz o telefone de emergência e o número do cruzamento.",{}],
+
+// ---------------- SIGNALS ----------------
+["signals","What does a solid red traffic light mean?","O que significa um sinal vermelho fixo?",
+ ["Stop. You may turn right after stopping if it is safe and no sign prohibits it.","Pare. Você pode virar à direita após parar, se for seguro e não houver placa proibindo."],
+ ["Stop only if cross traffic is present.","Pare somente se houver trânsito transversal."],
+ ["Slow down and go through carefully.","Reduza e passe com cuidado."],
+ "Vermelho fixo = pare. Direita no vermelho é permitida após parada total, salvo placa NO TURN ON RED.",{}],
+["signals","You are facing a red arrow pointing right. What may you do?","Você está diante de uma seta vermelha apontando para a direita. O que pode fazer?",
+ ["Stop and stay stopped. You may not turn until the signal turns green.","Parar e permanecer parado. Você não pode virar até o sinal ficar verde."],
+ ["Stop, then turn right if no vehicles are coming.","Parar e depois virar à direita se não vier nenhum veículo."],
+ ["Slow down and turn right with caution.","Reduzir e virar à direita com cuidado."],
+ "Seta vermelha: proibido virar naquela direção, mesmo após parar.",{}],
+["signals","What should you do at a flashing red traffic light?","O que você deve fazer em um sinal vermelho piscante?",
+ ["Stop, then go when it is safe, as you would at a stop sign.","Parar e seguir quando for seguro, como em uma placa de STOP."],
+ ["Slow down and go through without stopping.","Reduzir e passar sem parar."],
+ ["Stop and wait until the light stops flashing.","Parar e esperar o sinal parar de piscar."],
+ "Vermelho piscante = placa de STOP.",{}],
+["signals","The traffic light turns solid yellow as you approach. What should you do?","O sinal fica amarelo fixo quando você se aproxima. O que deve fazer?",
+ ["Stop if you can do so safely. If you cannot, cross the intersection carefully.","Parar se puder fazê-lo com segurança. Se não puder, cruzar com cuidado."],
+ ["Speed up to get through before the light turns red.","Acelerar para passar antes do vermelho."],
+ ["Stop immediately, even if you are already in the intersection.","Parar imediatamente, mesmo já estando dentro do cruzamento."],
+ "Amarelo = atenção, o vermelho vem a seguir. Pare se for seguro.",{}],
+["signals","What does a flashing yellow traffic light mean?","O que significa um sinal amarelo piscante?",
+ ["Slow down and proceed with caution. You do not need to stop.","Reduza e siga com cuidado. Não é preciso parar."],
+ ["Stop, then go when the way is clear.","Pare e siga quando o caminho estiver livre."],
+ ["The signal is broken, so treat it as a green light.","O sinal está quebrado, então trate como verde."],
+ "Amarelo piscante = atenção. Reduza e fique alerta.",{}],
+["signals","What does a flashing yellow arrow mean?","O que significa uma seta amarela piscante?",
+ ["You may turn, but first yield to oncoming traffic and pedestrians. The turn is not protected.","Você pode virar, mas antes dê preferência ao trânsito contrário e aos pedestres. A conversão não é protegida."],
+ ["You have a protected turn and oncoming traffic is stopped.","Você tem conversão protegida e o trânsito contrário está parado."],
+ ["You must stop and wait for a green arrow before turning.","Você deve parar e esperar a seta verde para virar."],
+ "Seta amarela piscante = conversão permitida, porém sem proteção.",{}],
+["signals","What does a green arrow mean?","O que significa uma seta verde?",
+ ["You may make a protected turn. Oncoming traffic is stopped by a red light.","Você pode fazer a conversão protegida. O trânsito contrário está parado no vermelho."],
+ ["You may turn, but oncoming traffic also has a green light.","Você pode virar, mas o trânsito contrário também tem sinal verde."],
+ ["You must turn in the direction of the arrow from any lane.","Você deve virar no sentido da seta a partir de qualquer faixa."],
+ "Seta verde = conversão protegida. Mesmo assim, olhe pedestres e quem ainda está no cruzamento.",{}],
+["signals","You have a solid green light. What must you still do?","Você está com sinal verde fixo. O que ainda precisa fazer?",
+ ["Yield to any vehicle, bicyclist, or pedestrian still in the intersection.","Dar preferência a qualquer veículo, ciclista ou pedestre que ainda esteja no cruzamento."],
+ ["Nothing. A green light always gives you the right-of-way.","Nada. O verde sempre lhe dá a preferência."],
+ ["Stop first, then go if the way is clear.","Parar primeiro e seguir se estiver livre."],
+ "Verde = siga, mas só depois de dar passagem a quem ainda está no cruzamento.",{}],
+["signals","A traffic signal is not working and all the lights are dark. What should you do?","Um semáforo não está funcionando e todas as luzes estão apagadas. O que você deve fazer?",
+ ["Stop as if there were stop signs in all directions, then go carefully.","Parar como se houvesse placas de STOP em todas as direções e seguir com cuidado."],
+ ["Slow down and go through, because main streets have the right-of-way.","Reduzir e passar, porque a rua principal tem preferência."],
+ ["Go through at normal speed while sounding your horn.","Passar em velocidade normal buzinando."],
+ "Semáforo apagado = cruzamento com STOP para todos (all-way stop).",{}],
+["signals","The light is green, but traffic is backed up and you cannot get all the way across the intersection. What should you do?","O sinal está verde, mas o trânsito está parado e você não consegue atravessar todo o cruzamento. O que fazer?",
+ ["Wait and do not enter the intersection until you can cross it completely.","Esperar e não entrar no cruzamento até poder atravessá-lo por completo."],
+ ["Enter the intersection so you can get through on the next light.","Entrar no cruzamento para conseguir passar no próximo sinal."],
+ ["Go around the stopped traffic by using the shoulder.","Contornar o trânsito parado pelo acostamento."],
+ "Não bloqueie o cruzamento ('gridlock'), mesmo com sinal verde.",{}],
+["signals","A police officer is directing traffic and signals you to go, but the traffic light is red. What should you do?","Um policial está orientando o trânsito e manda você seguir, mas o sinal está vermelho. O que fazer?",
+ ["Follow the officer's directions.","Seguir as orientações do policial."],
+ ["Wait for the light to turn green.","Esperar o sinal ficar verde."],
+ ["Stop and ask the officer to repeat the signal.","Parar e pedir ao policial que repita o gesto."],
+ "Ordens de policiais e bombeiros valem mais do que placas e semáforos.",{}],
+["signals","You are walking and the pedestrian signal starts flashing the raised hand or 'DON'T WALK'. What does it mean?","Você está a pé e o sinal de pedestres começa a piscar a mão levantada ou 'DON'T WALK'. O que significa?",
+ ["Do not start to cross. If you are already crossing, finish.","Não comece a atravessar. Se já estiver atravessando, termine."],
+ ["Run across before the cross traffic gets a green light.","Corra para atravessar antes do verde do trânsito transversal."],
+ ["Stop where you are, even in the middle of the street.","Pare onde estiver, mesmo no meio da rua."],
+ "Mão piscando: o tempo de travessia está acabando. Não inicie a travessia.",{}],
+["signals","What does a solid yellow arrow mean?","O que significa uma seta amarela fixa?",
+ ["The protected turning time is ending. Be ready to obey the next signal.","O tempo de conversão protegida está acabando. Prepare-se para obedecer ao próximo sinal."],
+ ["You may turn without yielding to anyone.","Você pode virar sem dar preferência a ninguém."],
+ ["Turns in that direction are never allowed.","Conversões naquela direção nunca são permitidas."],
+ "Seta amarela fixa: a seta verde acabou. Pare se puder com segurança.",{}],
+
+// ---------------- RIGHT-OF-WAY ----------------
+["row","Two vehicles reach a four-way stop at the same time. Who should go first?","Dois veículos chegam ao mesmo tempo a um cruzamento com STOP para todos. Quem passa primeiro?",
+ ["The vehicle on the right.","O veículo da direita."],
+ ["The vehicle on the left.","O veículo da esquerda."],
+ ["The larger vehicle.","O veículo maior."],
+ "Chegaram juntos: preferência de quem está à direita.",{}],
+["row","At an intersection with no signs or signals, who has the right-of-way?","Em um cruzamento sem placas nem semáforo, quem tem a preferência?",
+ ["The vehicle that gets to the intersection first.","O veículo que chegar primeiro ao cruzamento."],
+ ["The vehicle that is going faster.","O veículo que estiver mais rápido."],
+ ["The vehicle on the wider road.","O veículo que estiver na via mais larga."],
+ "Sem controle: passa quem chegou primeiro; se chegarem juntos, o da direita.",{}],
+["row","You are on a road that ends at a T-intersection with no stop or yield signs. Who has the right-of-way?","Você está em uma via que termina em uma interseção em T, sem placas de STOP ou YIELD. Quem tem a preferência?",
+ ["Vehicles on the through road.","Os veículos da via que segue em frente (via transversal)."],
+ ["Vehicles on the road that ends.","Os veículos da via que termina."],
+ ["Whichever vehicle signals first.","O veículo que der seta primeiro."],
+ "Em T sem sinalização, a preferência é de quem está na via contínua.",{}],
+["row","You want to turn left at an intersection. Oncoming vehicles are approaching. What should you do?","Você quer virar à esquerda em um cruzamento. Há veículos vindo em sentido contrário. O que fazer?",
+ ["Yield to oncoming vehicles that are close enough to be dangerous, and to pedestrians.","Dar preferência aos veículos em sentido contrário que estejam perto o bastante para oferecer perigo, e aos pedestres."],
+ ["Turn right away, because turning vehicles go first.","Virar logo, porque quem vira passa primeiro."],
+ ["Enter the intersection and make the others slow down.","Entrar no cruzamento e fazer os outros reduzirem."],
+ "Na conversão à esquerda, quem vem de frente e os pedestres têm preferência.",{}],
+["row","A pedestrian is crossing at a corner where there are no painted crosswalk lines. What should you do?","Um pedestre atravessa em uma esquina sem faixa pintada. O que você deve fazer?",
+ ["Stop and let the pedestrian finish crossing.","Parar e deixar o pedestre terminar de atravessar."],
+ ["Keep going, because there is no marked crosswalk.","Seguir, porque não há faixa marcada."],
+ ["Honk so the pedestrian hurries across.","Buzinar para o pedestre se apressar."],
+ "Esquinas têm faixa 'não marcada' (unmarked crosswalk). O pedestre tem preferência com ou sem pintura.",{}],
+["row","A vehicle in the lane next to yours has stopped at a crosswalk. What should you do?","Um veículo na faixa ao lado parou em uma faixa de pedestres. O que você deve fazer?",
+ ["Stop too. A pedestrian you cannot see may be crossing.","Parar também. Pode haver um pedestre atravessando que você não vê."],
+ ["Pass it slowly on the side with more room.","Ultrapassá-lo devagar pelo lado com mais espaço."],
+ ["Change lanes and continue at the same speed.","Mudar de faixa e seguir na mesma velocidade."],
+ "Nunca ultrapasse um veículo parado em uma faixa de pedestres.",{}],
+["row","A pedestrian with a white cane or a guide dog is waiting at the corner. Who has the right-of-way?","Um pedestre com bengala branca ou cão-guia espera na esquina. Quem tem a preferência?",
+ ["The pedestrian, at all times.","O pedestre, sempre."],
+ ["You, if your light is green.","Você, se o seu sinal estiver verde."],
+ ["Whoever gets to the crosswalk first.","Quem chegar primeiro à faixa."],
+ "Pedestres cegos têm preferência sempre. Não buzine e não pare em cima da faixa.",{}],
+["row","A blind pedestrian at the curb pulls in the cane and steps back from the crosswalk. What does this usually mean?","Um pedestre cego na calçada recolhe a bengala e se afasta da faixa. O que isso costuma significar?",
+ ["The pedestrian is not ready to cross, so you may go.","O pedestre não vai atravessar agora, então você pode seguir."],
+ ["The pedestrian is about to step into the street.","O pedestre está prestes a entrar na rua."],
+ ["You should honk to say that it is safe to cross.","Você deve buzinar para avisar que é seguro atravessar."],
+ "Bengala recolhida e passo para trás: sinal de que você pode passar.",{}],
+["row","You are about to enter a roundabout. Who must you yield to?","Você vai entrar em uma rotatória. A quem deve dar preferência?",
+ ["Traffic already in the roundabout, including bicyclists and pedestrians.","A quem já está na rotatória, incluindo ciclistas e pedestres."],
+ ["No one. Vehicles entering the roundabout go first.","A ninguém. Quem entra na rotatória passa primeiro."],
+ ["Only vehicles that are larger than yours.","Somente a veículos maiores que o seu."],
+ "Na rotatória, quem já está circulando tem preferência.",{}],
+["row","In which direction does traffic move in a roundabout?","Em que sentido o trânsito circula em uma rotatória?",
+ ["Counterclockwise.","Anti-horário."],
+ ["Clockwise.","Horário."],
+ ["Either direction, depending on your exit.","Qualquer sentido, dependendo da sua saída."],
+ "Nos EUA a rotatória gira no sentido anti-horário.",{}],
+["row","You miss your exit while driving in a roundabout. What should you do?","Você perde a sua saída dentro de uma rotatória. O que fazer?",
+ ["Keep going around until you reach your exit again.","Continuar dando a volta até chegar de novo à sua saída."],
+ ["Stop and back up to the exit.","Parar e dar ré até a saída."],
+ ["Stop in the roundabout and wait for a gap.","Parar na rotatória e esperar uma brecha."],
+ "Nunca pare nem dê ré dentro da rotatória.",{}],
+["row","Two vehicles meet on a steep, narrow mountain road where neither can pass. Who must back up?","Dois veículos se encontram em uma estrada de montanha íngreme e estreita, sem espaço para passar. Quem deve dar ré?",
+ ["The vehicle facing downhill backs up until the uphill vehicle can pass.","O veículo que está descendo dá ré até o que está subindo conseguir passar."],
+ ["The vehicle facing uphill backs down the hill.","O veículo que está subindo dá ré ladeira abaixo."],
+ ["The smaller vehicle always backs up.","O veículo menor sempre dá ré."],
+ "Quem sobe tem preferência. Quem desce tem mais controle para dar ré.",{}],
+["row","You are leaving a driveway or alley to enter a street. What must you do?","Você está saindo de uma garagem (driveway) ou de um beco para entrar em uma rua. O que deve fazer?",
+ ["Yield to pedestrians and to traffic already on the street.","Dar preferência aos pedestres e ao trânsito que já está na rua."],
+ ["Enter quickly so traffic has to slow down for you.","Entrar rápido para que o trânsito reduza por você."],
+ ["Honk and enter, because you have the right-of-way.","Buzinar e entrar, porque a preferência é sua."],
+ "Quem entra na via dá preferência a quem já está nela.",{}],
+["row","An emergency vehicle with its siren and red lights on is coming up behind you. What should you do?","Um veículo de emergência com sirene e luzes vermelhas ligadas vem atrás de você. O que fazer?",
+ ["Drive to the right edge of the road and stop until it has passed.","Ir para a borda direita da via e parar até ele passar."],
+ ["Speed up to stay ahead of it.","Acelerar para ficar à frente dele."],
+ ["Stop right where you are, in your lane.","Parar exatamente onde está, na sua faixa."],
+ "Encoste à direita e pare. Nunca pare no meio de um cruzamento.",{}],
+["row","You are in the middle of an intersection when you hear an emergency vehicle's siren. What should you do?","Você está no meio de um cruzamento quando ouve a sirene de um veículo de emergência. O que fazer?",
+ ["Continue through the intersection, then pull to the right and stop.","Terminar de atravessar o cruzamento e então encostar à direita e parar."],
+ ["Stop in the intersection right away.","Parar no cruzamento imediatamente."],
+ ["Back up out of the intersection.","Dar ré para sair do cruzamento."],
+ "Não pare dentro do cruzamento: termine de atravessar e encoste.",{}],
+["row","Which statement about the right-of-way is true?","Qual afirmação sobre a preferência é verdadeira?",
+ ["Never assume other drivers will yield. Give up your right-of-way when it helps prevent a collision.","Nunca presuma que os outros vão dar passagem. Abra mão da preferência quando isso evitar uma colisão."],
+ ["If you have the right-of-way, other drivers must always stop for you.","Se a preferência é sua, os outros são sempre obrigados a parar."],
+ ["The right-of-way belongs to whoever drives faster.","A preferência é de quem dirige mais rápido."],
+ "Preferência é algo que se cede, não que se toma.",{}],
+["row","Where should you stop at a stop sign if there is no limit line and no crosswalk?","Onde você deve parar em uma placa de STOP se não houver linha de retenção nem faixa de pedestres?",
+ ["Before entering the intersection.","Antes de entrar no cruzamento."],
+ ["Even with the stop sign post.","Alinhado ao poste da placa."],
+ ["In the intersection, where you can see better.","Dentro do cruzamento, onde se vê melhor."],
+ "Ordem: linha de retenção; se não houver, antes da faixa; se não houver, antes do cruzamento.",{}],
+["row","A funeral procession led by a traffic officer is going through an intersection. What should you do?","Um cortejo fúnebre conduzido por um agente de trânsito está passando por um cruzamento. O que fazer?",
+ ["Let the whole procession pass. It has the right-of-way.","Deixar todo o cortejo passar. Ele tem a preferência."],
+ ["Join the procession to get through faster.","Entrar no cortejo para passar mais rápido."],
+ ["Cut through a gap between two of its vehicles.","Cortar por um espaço entre dois veículos do cortejo."],
+ "Interferir em cortejo fúnebre dá multa.",{}],
+["row","A person riding a skateboard is crossing the street in a crosswalk. How should you treat this person?","Uma pessoa de skate está atravessando a rua na faixa. Como você deve tratá-la?",
+ ["As a pedestrian who has the right-of-way.","Como um pedestre com preferência."],
+ ["As a vehicle that must yield to cars.","Como um veículo que deve dar passagem aos carros."],
+ ["As a bicyclist who must use the bike lane.","Como um ciclista que deve usar a ciclofaixa."],
+ "Skate, patins e cadeira de rodas contam como pedestres.",{}],
+
+// ---------------- SPEED ----------------
+["speed","What does California's Basic Speed Law say?","O que diz a Lei Básica de Velocidade da Califórnia?",
+ ["You may never drive faster than is safe for current conditions.","Você nunca pode dirigir mais rápido do que é seguro para as condições do momento."],
+ ["You must always drive at the posted speed limit.","Você deve sempre dirigir no limite sinalizado."],
+ ["You may go over the limit to keep up with traffic.","Você pode passar do limite para acompanhar o trânsito."],
+ "Basic Speed Law: a velocidade segura depende das condições, não só da placa.",{}],
+["speed","Unless otherwise posted, what is the speed limit in a business or residential district?","Salvo sinalização diferente, qual é o limite em área comercial ou residencial?",
+ ["25 mph.","25 mph."],
+ ["35 mph.","35 mph."],
+ ["20 mph.","20 mph."],
+ "25 mph em distritos comerciais e residenciais.",{}],
+["speed","What is the speed limit within 500 feet of a school while children are outside or crossing the street, unless otherwise posted?","Qual é o limite a até 500 pés de uma escola enquanto crianças estão do lado de fora ou atravessando, salvo sinalização diferente?",
+ ["25 mph.","25 mph."],
+ ["35 mph.","35 mph."],
+ ["30 mph.","30 mph."],
+ "25 mph em zona escolar (algumas são sinalizadas com 15 mph).",{}],
+["speed","What is the speed limit at a blind intersection?","Qual é o limite em um cruzamento cego (sem visibilidade)?",
+ ["15 mph.","15 mph."],
+ ["25 mph.","25 mph."],
+ ["20 mph.","20 mph."],
+ "Cruzamento cego: 15 mph. Se a visão estiver bloqueada, avance devagar até enxergar.",{}],
+["speed","What is the speed limit in an alley?","Qual é o limite em um beco (alley)?",
+ ["15 mph.","15 mph."],
+ ["10 mph.","10 mph."],
+ ["25 mph.","25 mph."],
+ "Alley: 15 mph.",{}],
+["speed","You are within 100 feet of a railroad crossing with no gates or signals, and you cannot see the tracks for 400 feet in both directions. What is the speed limit?","Você está a menos de 100 pés de um cruzamento ferroviário sem cancelas nem sinais e não enxerga os trilhos por 400 pés nos dois sentidos. Qual é o limite?",
+ ["15 mph.","15 mph."],
+ ["25 mph.","25 mph."],
+ ["5 mph.","5 mph."],
+ "Cruzamento ferroviário sem controle e sem visibilidade: 15 mph.",{}],
+["speed","Unless otherwise posted, what is the maximum speed limit on most California highways?","Salvo sinalização diferente, qual é o limite máximo na maioria das rodovias da Califórnia?",
+ ["65 mph.","65 mph."],
+ ["55 mph.","55 mph."],
+ ["75 mph.","75 mph."],
+ "65 mph na maioria das rodovias (70 mph só onde sinalizado).",{}],
+["speed","Unless otherwise posted, what is the maximum speed limit on a two-lane undivided highway?","Salvo sinalização diferente, qual é o limite máximo em uma rodovia de duas faixas sem divisão central?",
+ ["55 mph.","55 mph."],
+ ["65 mph.","65 mph."],
+ ["45 mph.","45 mph."],
+ "55 mph em rodovia de pista simples (duas faixas, sem divisão).",{}],
+["speed","What is the maximum speed limit for a vehicle towing a trailer?","Qual é o limite máximo para um veículo rebocando um trailer?",
+ ["55 mph.","55 mph."],
+ ["65 mph.","65 mph."],
+ ["50 mph.","50 mph."],
+ "Rebocando: 55 mph.",{}],
+["speed","The posted speed limit is 65 mph, but there is thick fog. What does the law require?","O limite sinalizado é 65 mph, mas há neblina densa. O que a lei exige?",
+ ["Drive slower than 65 mph, at a speed that is safe for the conditions.","Dirigir abaixo de 65 mph, a uma velocidade segura para as condições."],
+ ["Drive 65 mph so that you do not block traffic.","Dirigir a 65 mph para não atrapalhar o trânsito."],
+ ["Drive 65 mph with your high-beam headlights on.","Dirigir a 65 mph com farol alto ligado."],
+ "Você pode ser multado no limite sinalizado se as condições exigirem menos.",{}],
+["speed","Can you get a ticket for driving too slowly?","Você pode ser multado por dirigir devagar demais?",
+ ["Yes, if you block the normal and reasonable flow of traffic.","Sim, se atrapalhar o fluxo normal e razoável do trânsito."],
+ ["No, driving slowly is always legal.","Não, dirigir devagar é sempre legal."],
+ ["Only if you are driving on a freeway at night.","Somente se estiver em uma freeway à noite."],
+ "Andar devagar demais e bloquear o trânsito também é infração.",{}],
+["speed","A bus, streetcar, or trolley is stopped at a safety zone. How fast may you pass it?","Um ônibus ou bonde está parado em uma 'safety zone'. A que velocidade você pode passar?",
+ ["No faster than 10 mph.","No máximo a 10 mph."],
+ ["No faster than 25 mph.","No máximo a 25 mph."],
+ ["At the posted speed limit.","No limite sinalizado."],
+ "Passando por ônibus/bonde parado em safety zone: máximo de 10 mph.",{}],
+["speed","How much should you slow down on a wet road?","Quanto você deve reduzir em pista molhada?",
+ ["By 5 to 10 mph.","De 5 a 10 mph."],
+ ["By 1 to 2 mph.","De 1 a 2 mph."],
+ ["You do not need to slow down if your tires are new.","Não é preciso reduzir se os pneus forem novos."],
+ "Pista molhada: reduza de 5 a 10 mph.",{}],
+["speed","How much should you slow down on packed snow?","Quanto você deve reduzir em neve compactada?",
+ ["Cut your speed in half.","Reduzir a velocidade pela metade."],
+ ["Slow down by 5 mph.","Reduzir 5 mph."],
+ ["Keep your speed and use a lower gear.","Manter a velocidade e usar marcha mais baixa."],
+ "Neve compactada: metade da velocidade.",{}],
+["speed","How should you drive on an icy road?","Como você deve dirigir em pista com gelo?",
+ ["Slow to a crawl, no faster than about 5 mph.","Bem devagar, a não mais que cerca de 5 mph."],
+ ["Reduce your speed by 10 mph.","Reduzir a velocidade em 10 mph."],
+ ["Drive at the limit and brake firmly when needed.","Dirigir no limite e frear firme quando preciso."],
+ "Gelo: velocidade mínima, quase parando.",{}],
+["speed","In heavy rain or snow, you cannot see more than 100 feet ahead. What is the fastest you should drive?","Com chuva ou neve forte, você não enxerga mais de 100 pés à frente. Qual é a velocidade máxima recomendada?",
+ ["30 mph.","30 mph."],
+ ["45 mph.","45 mph."],
+ ["55 mph.","55 mph."],
+ "Visibilidade menor que 100 pés: não passe de 30 mph.",{}],
+["speed","How does driving faster affect the distance you need to stop?","Como dirigir mais rápido afeta a distância necessária para parar?",
+ ["The faster you go, the longer it takes to stop.","Quanto mais rápido, mais distância você precisa para parar."],
+ ["Speed has no effect on stopping distance.","A velocidade não afeta a distância de parada."],
+ ["The faster you go, the shorter the stopping distance.","Quanto mais rápido, menor a distância de parada."],
+ "Mais velocidade = mais distância de frenagem.",{}],
+["speed","You see children playing near the road ahead. What should you do?","Você vê crianças brincando perto da via à frente. O que fazer?",
+ ["Slow down and be ready to stop.","Reduzir e estar pronto para parar."],
+ ["Honk and keep your speed.","Buzinar e manter a velocidade."],
+ ["Move to the left lane and speed up to pass quickly.","Passar para a faixa da esquerda e acelerar para passar logo."],
+ "Crianças são imprevisíveis: reduza e fique pronto para parar.",{}],
+["speed","Low-speed vehicles and neighborhood electric vehicles may not be driven on roads with a speed limit above what speed?","Veículos de baixa velocidade (LSV/NEV) não podem circular em vias com limite acima de quanto?",
+ ["35 mph.","35 mph."],
+ ["25 mph.","25 mph."],
+ ["45 mph.","45 mph."],
+ "LSV/NEV: máximo de 25 mph e proibidos em vias com limite acima de 35 mph.",{}]
+);
+
+Q.push(
+// ---------------- LANES & MARKINGS ----------------
+["lanes","What do double solid yellow lines in the center of the road mean?","O que significam linhas amarelas duplas contínuas no centro da via?",
+ ["Do not pass. You may cross them only to turn left into a driveway or private road, or to make a legal U-turn.","Não ultrapasse. Você só pode cruzá-las para virar à esquerda em uma entrada de garagem ou via particular, ou para um retorno permitido."],
+ ["You may pass if no vehicles are coming toward you.","Você pode ultrapassar se não vier ninguém em sentido contrário."],
+ ["They separate lanes of traffic going in the same direction.","Separam faixas de trânsito no mesmo sentido."],
+ "Amarela dupla contínua: proibido ultrapassar.",{}],
+["lanes","There is a broken yellow line next to your lane. What does it mean?","Há uma linha amarela tracejada ao lado da sua faixa. O que significa?",
+ ["You may pass if it is safe.","Você pode ultrapassar se for seguro."],
+ ["You may never pass.","Você nunca pode ultrapassar."],
+ ["You must turn left at the next intersection.","Você deve virar à esquerda no próximo cruzamento."],
+ "Tracejada do seu lado: ultrapassagem permitida, com segurança.",{}],
+["lanes","There is a solid yellow line on your side and a broken yellow line on the other side. May you pass?","Há uma linha amarela contínua do seu lado e uma tracejada do outro. Você pode ultrapassar?",
+ ["No. Vehicles on your side may not pass.","Não. Os veículos do seu lado não podem ultrapassar."],
+ ["Yes, if you finish passing within 200 feet.","Sim, se concluir a ultrapassagem em até 200 pés."],
+ ["Yes, but only during the day.","Sim, mas somente de dia."],
+ "Vale a linha do seu lado: contínua = não ultrapasse.",{}],
+["lanes","What do two sets of solid double yellow lines spaced two or more feet apart mean?","O que significam dois conjuntos de linhas amarelas duplas contínuas separados por dois pés ou mais?",
+ ["They are a barrier. Do not drive on or over them, or turn across them, except at designated openings.","São uma barreira. Não passe sobre elas nem vire cruzando-as, exceto nas aberturas indicadas."],
+ ["They mark a center lane you may use for left turns.","Marcam uma faixa central que você pode usar para virar à esquerda."],
+ ["They mark a carpool lane you may enter at any point.","Marcam uma faixa de carpool em que se pode entrar em qualquer ponto."],
+ "Dois pares de amarelas duplas = barreira, como se fosse um muro.",{}],
+["lanes","What do yellow lines on the road separate?","O que as linhas amarelas na pista separam?",
+ ["Traffic moving in opposite directions.","Trânsito em sentidos opostos."],
+ ["Traffic moving in the same direction.","Trânsito no mesmo sentido."],
+ ["Bicycle lanes from parking spaces.","Ciclofaixas de vagas de estacionamento."],
+ "Amarela = sentidos opostos. Branca = mesmo sentido.",{}],
+["lanes","What do broken white lines on the road separate?","O que as linhas brancas tracejadas na pista separam?",
+ ["Lanes of traffic moving in the same direction.","Faixas de trânsito no mesmo sentido."],
+ ["Lanes of traffic moving in opposite directions.","Faixas de trânsito em sentidos opostos."],
+ ["The road from the shoulder.","A pista do acostamento."],
+ "Branca tracejada: faixas no mesmo sentido; pode mudar de faixa com segurança.",{}],
+["lanes","What do double solid white lines mean?","O que significam linhas brancas duplas contínuas?",
+ ["Never change lanes over them. Wait until you see a single broken white line.","Nunca mude de faixa sobre elas. Espere até aparecer uma linha branca tracejada simples."],
+ ["You may cross them only to pass slower vehicles.","Você só pode cruzá-las para ultrapassar veículos lentos."],
+ ["They mark the edge of the freeway shoulder.","Marcam a borda do acostamento da freeway."],
+ "Branca dupla contínua = barreira entre faixas comuns e faixas especiais (HOV).",{}],
+["lanes","How far may you drive in a center left turn lane?","Por que distância você pode trafegar em uma faixa central de conversão à esquerda?",
+ ["No more than 200 feet.","No máximo 200 pés."],
+ ["No more than 500 feet.","No máximo 500 pés."],
+ ["As far as needed to pass slow traffic.","O quanto for preciso para ultrapassar trânsito lento."],
+ "Center left turn lane: até 200 pés.",{}],
+["lanes","What may you use a center left turn lane for?","Para que você pode usar a faixa central de conversão à esquerda?",
+ ["To prepare for and make a left turn or a permitted U-turn.","Para se preparar e fazer conversão à esquerda ou retorno permitido."],
+ ["To pass vehicles that are moving slowly.","Para ultrapassar veículos lentos."],
+ ["To drive through when the regular lanes are full.","Para seguir em frente quando as faixas normais estão cheias."],
+ "A faixa central não é faixa de ultrapassagem nem de circulação.",{}],
+["lanes","When may you drive in a bike lane?","Quando você pode trafegar em uma ciclofaixa?",
+ ["When you are within 200 feet of an intersection where you will turn right, after checking for bicyclists.","Quando estiver a até 200 pés do cruzamento onde vai virar à direita, depois de verificar se há ciclistas."],
+ ["When traffic is heavy and no bicyclists are in it.","Quando o trânsito está pesado e não há ciclistas nela."],
+ ["When you want to pass a vehicle that is turning left.","Quando quiser ultrapassar um veículo que vai virar à esquerda."],
+ "Só se entra na ciclofaixa para estacionar (onde permitido), entrar/sair da via ou virar, a até 200 pés.",{}],
+["lanes","Who may use a carpool (HOV) lane?","Quem pode usar a faixa de carpool (HOV)?",
+ ["Vehicles with the number of people shown on the signs, buses, motorcycles, and vehicles with a DMV decal.","Veículos com o número de ocupantes indicado nas placas, ônibus, motos e veículos com adesivo do DMV."],
+ ["Any vehicle, as long as it is going at least 65 mph.","Qualquer veículo, desde que esteja a pelo menos 65 mph."],
+ ["Only buses and emergency vehicles.","Somente ônibus e veículos de emergência."],
+ "HOV: ocupação mínima indicada na placa. Motos podem, salvo placa em contrário.",{}],
+["lanes","How should you enter or leave a carpool lane that is separated by double solid lines?","Como você deve entrar ou sair de uma faixa de carpool separada por linhas duplas contínuas?",
+ ["Only at the designated entrance and exit openings.","Somente nas aberturas de entrada e saída indicadas."],
+ ["At any point, if you signal for five seconds.","Em qualquer ponto, se der seta por cinco segundos."],
+ ["At any point, if traffic in the next lane is stopped.","Em qualquer ponto, se a faixa ao lado estiver parada."],
+ "Não cruze as linhas duplas contínuas do HOV.",{}],
+["lanes","You are driving slowly on a two-lane road where passing is unsafe. When must you pull into a turnout to let others pass?","Você está andando devagar em uma via de duas faixas onde ultrapassar é perigoso. Quando deve entrar em um 'turnout' para dar passagem?",
+ ["When five or more vehicles are following you.","Quando cinco ou mais veículos estiverem atrás de você."],
+ ["When two or more vehicles are following you.","Quando dois ou mais veículos estiverem atrás de você."],
+ ["Only when a driver behind you honks.","Somente quando o motorista de trás buzinar."],
+ "Cinco ou mais veículos atrás: use o turnout.",{}],
+["lanes","On a freeway, which lane is the 'Number 1 Lane'?","Em uma freeway, qual é a 'Number 1 Lane' (faixa número 1)?",
+ ["The far-left lane.","A faixa mais à esquerda."],
+ ["The far-right lane.","A faixa mais à direita."],
+ ["The lane next to the on-ramp.","A faixa ao lado do acesso."],
+ "As faixas são numeradas a partir da esquerda: a nº 1 é a rápida.",{}],
+["lanes","Which lane should you use to pass other vehicles?","Que faixa você deve usar para ultrapassar outros veículos?",
+ ["The left lane.","A faixa da esquerda."],
+ ["The right lane.","A faixa da direita."],
+ ["The shoulder.","O acostamento."],
+ "Esquerda para ultrapassar ou virar à esquerda; direita para entrar e sair.",{}],
+["lanes","Before changing lanes, what should you do after signaling and checking your mirrors?","Antes de mudar de faixa, o que fazer depois de dar seta e olhar os espelhos?",
+ ["Look over your shoulder to check your blind spot.","Olhar por cima do ombro para checar o ponto cego."],
+ ["Slow down well below the speed of traffic.","Reduzir bem abaixo da velocidade do trânsito."],
+ ["Turn the steering wheel quickly so the change is short.","Virar o volante rápido para a mudança ser curta."],
+ "Espelho não mostra o ponto cego: vire a cabeça.",{}],
+["lanes","You see large broken lines painted across your lane on the freeway. What do they mean?","Você vê linhas tracejadas grandes pintadas na sua faixa na freeway. O que significam?",
+ ["Your lane is ending. Be ready to exit or merge.","Sua faixa está terminando. Prepare-se para sair ou convergir."],
+ ["A carpool lane begins on your left.","Uma faixa de carpool começa à sua esquerda."],
+ ["You must reduce your speed to 45 mph.","Você deve reduzir para 45 mph."],
+ "Marcas de fim de faixa: a faixa acaba ou vira saída.",{}],
+["lanes","What does a line of solid white triangles across your lane mean?","O que significa uma fileira de triângulos brancos pintados atravessando a sua faixa?",
+ ["It is a yield line. It shows where to yield or stop.","É uma linha de 'yield'. Mostra onde dar preferência ou parar."],
+ ["It marks the start of a no-parking zone.","Marca o início de uma área de estacionamento proibido."],
+ ["It marks a speed bump ahead.","Marca uma lombada à frente."],
+ "Triângulos brancos ('shark teeth') = linha de dar preferência.",{}],
+["lanes","What is true about a lane marked for buses only?","O que é verdade sobre uma faixa exclusiva para ônibus?",
+ ["You may not drive, stop, or park in it, but you may cross it to turn right.","Você não pode trafegar, parar nem estacionar nela, mas pode cruzá-la para virar à direita."],
+ ["You may drive in it when no buses are in sight.","Você pode trafegar nela quando não houver ônibus à vista."],
+ ["You may park in it for up to five minutes.","Você pode estacionar nela por até cinco minutos."],
+ "Faixa exclusiva de ônibus: só pode cruzar para virar à direita.",{}],
+["lanes","You miss the street where you wanted to turn. What should you do?","Você passou da rua em que queria virar. O que fazer?",
+ ["Keep driving until you can turn around safely and legally.","Seguir em frente até poder retornar de forma segura e legal."],
+ ["Stop and back up to the street you missed.","Parar e dar ré até a rua que perdeu."],
+ ["Make a quick turn from whatever lane you are in.","Virar rápido a partir da faixa em que estiver."],
+ "Errou a entrada? Siga e retorne adiante. Nunca dê ré no trânsito.",{}],
+["lanes","You need to cross several freeway lanes to reach your exit. How should you do it?","Você precisa cruzar várias faixas da freeway para chegar à saída. Como fazer?",
+ ["Change one lane at a time, checking your blind spot each time.","Mudar uma faixa por vez, checando o ponto cego a cada mudança."],
+ ["Cross all the lanes at once when you see a gap.","Cruzar todas as faixas de uma vez quando houver uma brecha."],
+ ["Slow down in your lane until traffic lets you cross.","Reduzir na sua faixa até o trânsito deixar você cruzar."],
+ "Uma faixa por vez, sempre.",{}],
+
+// ---------------- TURNS ----------------
+["turns","How far before a turn should you start signaling?","A que distância antes de virar você deve começar a dar seta?",
+ ["At least 100 feet.","Pelo menos 100 pés."],
+ ["At least 25 feet.","Pelo menos 25 pés."],
+ ["At least 500 feet.","Pelo menos 500 pés."],
+ "Seta pelo menos 100 pés antes da conversão.",{}],
+["turns","When you make a right turn, where should you begin and end the turn?","Ao virar à direita, onde você deve começar e terminar a conversão?",
+ ["Begin and end in the lane closest to the right edge of the road.","Começar e terminar na faixa mais próxima da borda direita da via."],
+ ["Begin in the right lane and end in any lane.","Começar na faixa da direita e terminar em qualquer faixa."],
+ ["Begin in any lane and end in the right lane.","Começar em qualquer faixa e terminar na da direita."],
+ "Direita: comece e termine na faixa da direita, sem abrir a curva.",{}],
+["turns","When may you turn left on a red light?","Quando você pode virar à esquerda no sinal vermelho?",
+ ["Only from a one-way street onto a one-way street, after stopping, if no sign prohibits it.","Somente de uma rua de mão única para outra de mão única, após parar, se não houver placa proibindo."],
+ ["From any street, if there is no oncoming traffic.","De qualquer rua, se não houver trânsito contrário."],
+ ["Never. Left turns on red are always illegal.","Nunca. Virar à esquerda no vermelho é sempre ilegal."],
+ "Esquerda no vermelho: só de mão única para mão única.",{}],
+["turns","You want to turn right on a solid red light. What must you do first?","Você quer virar à direita em um sinal vermelho fixo. O que deve fazer antes?",
+ ["Come to a complete stop and yield to pedestrians and traffic.","Parar completamente e dar preferência a pedestres e veículos."],
+ ["Slow to 5 mph and check for traffic.","Reduzir para 5 mph e checar o trânsito."],
+ ["Signal and turn without stopping if no one is coming.","Dar seta e virar sem parar se não vier ninguém."],
+ "Direita no vermelho exige parada total antes.",{}],
+["turns","When may you make a U-turn in a residential district?","Quando você pode fazer retorno (U-turn) em área residencial?",
+ ["When no vehicles are approaching within 200 feet.","Quando não houver veículos se aproximando a menos de 200 pés."],
+ ["Only on a one-way street.","Somente em rua de mão única."],
+ ["Never. U-turns are illegal in residential districts.","Nunca. Retorno é ilegal em área residencial."],
+ "Residencial: U-turn permitido se nenhum veículo se aproxima a menos de 200 pés.",{}],
+["turns","Where may you make a U-turn in a business district?","Onde você pode fazer retorno em área comercial?",
+ ["Only at an intersection, or on a divided highway where an opening is provided.","Somente em cruzamento, ou em via dividida onde houver uma abertura."],
+ ["Anywhere, if you signal for 100 feet.","Em qualquer lugar, se der seta por 100 pés."],
+ ["In the middle of any block with light traffic.","No meio de qualquer quarteirão com pouco trânsito."],
+ "Comercial: retorno só em cruzamentos ou aberturas de via dividida.",{}],
+["turns","Where is a U-turn always illegal?","Onde o retorno é sempre ilegal?",
+ ["On a one-way street.","Em rua de mão única."],
+ ["At an intersection with a green light.","Em cruzamento com sinal verde."],
+ ["Across a double yellow line.","Cruzando uma linha amarela dupla."],
+ "Proibido retornar em mão única, em cruzamento ferroviário, em frente a quartel de bombeiros e onde não se vê 200 pés.",{}],
+["turns","May you make a U-turn across a double yellow line?","Você pode fazer retorno cruzando uma linha amarela dupla?",
+ ["Yes, if it is safe and no sign prohibits it.","Sim, se for seguro e não houver placa proibindo."],
+ ["No, it is never legal.","Não, nunca é permitido."],
+ ["Only in an emergency.","Somente em emergência."],
+ "Uma linha dupla amarela simples pode ser cruzada para retorno legal. Dois pares (barreira), não.",{}],
+["turns","You are stopped in the intersection waiting to turn left. How should you keep your front wheels?","Você está parado no cruzamento esperando para virar à esquerda. Como deve manter as rodas dianteiras?",
+ ["Pointed straight ahead until you start to turn.","Retas, apontadas para a frente, até começar a virar."],
+ ["Turned to the left so you can turn faster.","Viradas para a esquerda para virar mais rápido."],
+ ["Turned to the right, away from traffic.","Viradas para a direita, longe do trânsito."],
+ "Rodas retas: se alguém bater atrás, você não é empurrado para a contramão.",{}],
+["turns","An oncoming vehicle has its right turn signal on. You want to turn left. What should you do?","Um veículo em sentido contrário está com a seta da direita ligada. Você quer virar à esquerda. O que fazer?",
+ ["Wait until the vehicle actually starts its turn before you go.","Esperar o veículo realmente começar a virar antes de avançar."],
+ ["Turn right away, because the vehicle is turning.","Virar logo, porque o veículo vai virar."],
+ ["Honk and turn in front of the vehicle.","Buzinar e virar na frente do veículo."],
+ "Seta ligada não é garantia: o motorista pode ter esquecido ou mudar de ideia.",{}],
+["turns","You are turning left from a one-way street onto another one-way street. Which lane should you start from?","Você vai virar à esquerda de uma rua de mão única para outra de mão única. De qual faixa deve sair?",
+ ["The far-left lane.","A faixa mais à esquerda."],
+ ["The center lane.","A faixa do meio."],
+ ["Any lane that is open.","Qualquer faixa livre."],
+ "De mão única para a esquerda: saia da faixa mais à esquerda.",{}],
+["turns","You are turning left from a two-way street. Which lane should you start from?","Você vai virar à esquerda saindo de uma rua de mão dupla. De qual faixa deve sair?",
+ ["The lane closest to the center of the street, or the left turn lane.","A faixa mais próxima do centro da rua, ou a faixa de conversão à esquerda."],
+ ["The lane closest to the right curb.","A faixa mais próxima do meio-fio direito."],
+ ["Whichever lane has the least traffic.","A faixa com menos trânsito."],
+ "Mão dupla: saia da faixa junto à linha central.",{}],
+["turns","No other vehicles are near you. Do you still need to signal before you turn?","Não há outros veículos por perto. Ainda é preciso dar seta antes de virar?",
+ ["Yes. Always signal, even when you do not see other vehicles.","Sim. Dê seta sempre, mesmo quando não vir outros veículos."],
+ ["No. Signals are needed only in traffic.","Não. A seta só é necessária com trânsito."],
+ ["Only at night.","Somente à noite."],
+ "Um veículo que você não viu pode aparecer. Sinalize sempre.",{}],
+["turns","Your turn signals are not working. What should you do?","Suas setas não estão funcionando. O que fazer?",
+ ["Use hand and arm signals.","Usar sinais com a mão e o braço."],
+ ["Turn only at intersections with traffic lights.","Virar apenas em cruzamentos com semáforo."],
+ ["Use your emergency flashers before every turn.","Usar o pisca-alerta antes de cada conversão."],
+ "Sem seta (ou com sol forte dificultando a visão): sinais de braço.",{}],
+["turns","A driver ahead of you holds the left arm straight out of the window. What is the driver signaling?","O motorista à frente estende o braço esquerdo reto para fora da janela. O que ele está sinalizando?",
+ ["A left turn.","Conversão à esquerda."],
+ ["A right turn.","Conversão à direita."],
+ ["A stop.","Parada."],
+ "Braço reto = esquerda. Braço para cima = direita. Braço para baixo = reduzir ou parar.",{}],
+["turns","A driver ahead of you holds the left arm out of the window, bent upward. What is the driver signaling?","O motorista à frente põe o braço esquerdo para fora, dobrado para cima. O que ele está sinalizando?",
+ ["A right turn.","Conversão à direita."],
+ ["A left turn.","Conversão à esquerda."],
+ ["Slowing or stopping.","Redução ou parada."],
+ "Braço dobrado para cima = vai virar à direita.",{}],
+["turns","You plan to turn right at a corner, and there is a bike lane on your right. What should you do?","Você vai virar à direita em uma esquina e há uma ciclofaixa à sua direita. O que fazer?",
+ ["Check for bicyclists, then merge into the bike lane no more than 200 feet before the turn.","Verificar se há ciclistas e entrar na ciclofaixa no máximo 200 pés antes da conversão."],
+ ["Turn from your lane, across the bike lane, without entering it.","Virar a partir da sua faixa, cruzando a ciclofaixa sem entrar nela."],
+ ["Stop in the bike lane and wait for a green arrow.","Parar na ciclofaixa e esperar uma seta verde."],
+ "Entre na ciclofaixa antes de virar (até 200 pés), dando preferência aos ciclistas.",{}],
+
+// ---------------- PARKING ----------------
+["parking","What does a red curb mean?","O que significa meio-fio vermelho?",
+ ["No stopping, standing, or parking.","Proibido parar, esperar ou estacionar."],
+ ["Parking for up to 15 minutes.","Estacionamento por até 15 minutos."],
+ ["Loading and unloading passengers only.","Somente embarque e desembarque de passageiros."],
+ "Vermelho: nada de parar (ônibus só em zonas vermelhas marcadas para eles).",{}],
+["parking","What does a white curb mean?","O que significa meio-fio branco?",
+ ["Stop only long enough to pick up or drop off passengers.","Parar apenas o tempo necessário para embarcar ou desembarcar passageiros."],
+ ["Parking for disabled persons only.","Estacionamento apenas para pessoas com deficiência."],
+ ["No stopping at any time.","Proibido parar a qualquer momento."],
+ "Branco: embarque e desembarque rápido de passageiros.",{}],
+["parking","What does a green curb mean?","O que significa meio-fio verde?",
+ ["Parking for a limited time, shown on a sign or painted on the curb.","Estacionamento por tempo limitado, indicado em placa ou pintado no meio-fio."],
+ ["Parking for electric vehicles only.","Estacionamento apenas para veículos elétricos."],
+ ["Parking with no time limit.","Estacionamento sem limite de tempo."],
+ "Verde: tempo limitado.",{}],
+["parking","What does a yellow curb mean?","O que significa meio-fio amarelo?",
+ ["Stop only to load or unload passengers or freight, for no longer than the posted time.","Parar apenas para carga e descarga de passageiros ou mercadorias, pelo tempo indicado."],
+ ["Parking for taxis only.","Estacionamento apenas para táxis."],
+ ["Parking is allowed on weekends only.","Estacionamento permitido apenas nos fins de semana."],
+ "Amarelo: carga e descarga. Motorista de carro particular normalmente deve ficar no veículo.",{}],
+["parking","Who may park at a blue curb?","Quem pode estacionar em meio-fio azul?",
+ ["A disabled person with a special placard or license plate, or someone driving that person.","Pessoa com deficiência com placa ou credencial especial, ou quem a estiver transportando."],
+ ["Anyone, for less than 15 minutes.","Qualquer pessoa, por menos de 15 minutos."],
+ ["Anyone who is picking up or dropping off passengers.","Qualquer pessoa que esteja embarcando ou desembarcando passageiros."],
+ "Azul: exclusivo para pessoas com deficiência com credencial/placa.",{}],
+["parking","How close to a fire hydrant may you park?","A que distância mínima de um hidrante você pode estacionar?",
+ ["No closer than 15 feet.","Não menos que 15 pés."],
+ ["No closer than 5 feet.","Não menos que 5 pés."],
+ ["No closer than 10 feet.","Não menos que 10 pés."],
+ "Hidrante: 15 pés.",{}],
+["parking","How close to a marked or unmarked crosswalk may you park?","A que distância mínima de uma faixa de pedestres, marcada ou não, você pode estacionar?",
+ ["No closer than 20 feet.","Não menos que 20 pés."],
+ ["No closer than 5 feet.","Não menos que 5 pés."],
+ ["Right up to the crosswalk line.","Até encostar na linha da faixa."],
+ "Regra nova (daylighting): 20 pés da faixa; 15 pés se houver extensão do meio-fio.",{}],
+["parking","How close to a sidewalk ramp for disabled persons may you park?","A que distância mínima de uma rampa de calçada para pessoas com deficiência você pode estacionar?",
+ ["No closer than 3 feet.","Não menos que 3 pés."],
+ ["No closer than 1 foot.","Não menos que 1 pé."],
+ ["You may park in front of it for five minutes.","Você pode estacionar em frente a ela por cinco minutos."],
+ "Rampa de acessibilidade: 3 pés.",{}],
+["parking","How close to a fire station driveway may you park?","A que distância mínima da entrada de um quartel de bombeiros você pode estacionar?",
+ ["No closer than 15 feet.","Não menos que 15 pés."],
+ ["No closer than 7 feet.","Não menos que 7 pés."],
+ ["No closer than 50 feet.","Não menos que 50 pés."],
+ "Entrada de quartel de bombeiros: 15 pés.",{}],
+["parking","When you parallel park, how close to the curb must your wheels be?","Ao estacionar em paralelo, a que distância do meio-fio as rodas devem ficar?",
+ ["Within 18 inches.","A até 18 polegadas."],
+ ["Within 24 inches.","A até 24 polegadas."],
+ ["Within 36 inches.","A até 36 polegadas."],
+ "Baliza: no máximo 18 polegadas (cerca de 45 cm) do meio-fio.",{}],
+["parking","You park facing downhill on a street with a curb. Which way should you turn your front wheels?","Você estaciona de frente para a descida em uma rua com meio-fio. Para onde virar as rodas dianteiras?",
+ ["Toward the curb.","Para o meio-fio."],
+ ["Away from the curb.","Para longe do meio-fio."],
+ ["Straight ahead.","Retas, para a frente."],
+ "Descida: rodas para o meio-fio (para a direita).",{}],
+["parking","You park facing uphill on a street with a curb. Which way should you turn your front wheels?","Você estaciona de frente para a subida em uma rua com meio-fio. Para onde virar as rodas dianteiras?",
+ ["Away from the curb, then let the vehicle roll back until the wheel touches the curb.","Para longe do meio-fio, e deixar o veículo recuar até a roda encostar nele."],
+ ["Toward the curb.","Para o meio-fio."],
+ ["Straight ahead.","Retas, para a frente."],
+ "Subida com meio-fio: rodas para a esquerda (longe do meio-fio). É o único caso assim.",{}],
+["parking","You park on a hill where there is no curb. Which way should you turn your front wheels?","Você estaciona em uma ladeira sem meio-fio. Para onde virar as rodas dianteiras?",
+ ["To the right, so the vehicle would roll away from the center of the road.","Para a direita, para que o veículo role para longe do centro da via."],
+ ["To the left, toward the center of the road.","Para a esquerda, em direção ao centro da via."],
+ ["Straight ahead, with the parking brake set.","Retas, com o freio de mão puxado."],
+ "Sem meio-fio (subida ou descida): rodas para a direita.",{}],
+["parking","Besides turning your wheels, what should you do when you park on a hill?","Além de virar as rodas, o que você deve fazer ao estacionar em ladeira?",
+ ["Set the parking brake and leave the vehicle in park or in gear.","Puxar o freio de mão e deixar o veículo em 'park' ou engrenado."],
+ ["Leave the vehicle in neutral.","Deixar o veículo em ponto morto."],
+ ["Leave the engine running.","Deixar o motor ligado."],
+ "Freio de mão + 'P' (ou marcha engatada no câmbio manual).",{}],
+["parking","When may you park in the crosshatched (diagonal lines) area next to a disabled parking space?","Quando você pode estacionar na área hachurada (linhas diagonais) ao lado de uma vaga para pessoas com deficiência?",
+ ["Never.","Nunca."],
+ ["When you have a disabled placard.","Quando tiver credencial de pessoa com deficiência."],
+ ["For less than five minutes.","Por menos de cinco minutos."],
+ "A área hachurada é para acesso de cadeira de rodas. Ninguém estaciona ali.",{}],
+["parking","When is double parking allowed?","Quando é permitido estacionar em fila dupla?",
+ ["Never.","Nunca."],
+ ["When you stay in the vehicle.","Quando você fica no veículo."],
+ ["For up to two minutes, with flashers on.","Por até dois minutos, com o pisca-alerta ligado."],
+ "Fila dupla é sempre ilegal.",{}],
+["parking","When may you stop or park on a freeway?","Quando você pode parar ou estacionar em uma freeway?",
+ ["Only in an emergency, or when an officer or a device requires you to stop.","Somente em emergência, ou quando um policial ou dispositivo exigir a parada."],
+ ["Whenever you need to rest or check a map.","Sempre que precisar descansar ou ver o mapa."],
+ ["At night, when traffic is light.","À noite, quando o trânsito é leve."],
+ "Freeway: parar só em emergência. Veículo deixado por mais de 4 horas pode ser removido.",{}],
+["parking","You must stop on the freeway because of an emergency. What should you do?","Você precisa parar na freeway por causa de uma emergência. O que fazer?",
+ ["Park completely off the pavement and stay in the vehicle with the doors locked until help arrives.","Parar totalmente fora da pista e ficar no veículo com as portas travadas até a ajuda chegar."],
+ ["Stop in the right lane and turn on your flashers.","Parar na faixa da direita e ligar o pisca-alerta."],
+ ["Stand behind your vehicle and wave at traffic.","Ficar atrás do veículo acenando para o trânsito."],
+ "Saia totalmente da pista e permaneça dentro do carro.",{}],
+["parking","What is the minimum size of space you should look for when you parallel park?","Qual é o tamanho mínimo de vaga que você deve procurar para fazer baliza?",
+ ["At least 3 feet longer than your vehicle.","Pelo menos 3 pés maior que o seu veículo."],
+ ["Exactly the length of your vehicle.","Exatamente o comprimento do seu veículo."],
+ ["At least twice the length of your vehicle.","Pelo menos o dobro do comprimento do seu veículo."],
+ "Vaga para baliza: 3 pés a mais que o carro.",{}],
+["parking","You have parked at the curb on a busy street. What should you do before you open the driver's door?","Você estacionou junto ao meio-fio em uma rua movimentada. O que fazer antes de abrir a porta do motorista?",
+ ["Check for passing vehicles, bicycles, and motorcycles.","Verificar se vêm veículos, bicicletas ou motos."],
+ ["Open it quickly so traffic has to go around.","Abrir rápido para o trânsito desviar."],
+ ["Turn on your high-beam headlights.","Ligar o farol alto."],
+ "Olhe antes de abrir a porta do lado do trânsito ('dooring' de ciclistas).",{}],
+["parking","Who may park in a space marked for zero-emission vehicles?","Quem pode estacionar em vaga marcada para veículos de emissão zero?",
+ ["Only drivers of zero-emission vehicles.","Somente motoristas de veículos de emissão zero."],
+ ["Any vehicle, for up to 30 minutes.","Qualquer veículo, por até 30 minutos."],
+ ["Any vehicle with two or more people in it.","Qualquer veículo com duas ou mais pessoas."],
+ "Vaga de emissão zero: só para esses veículos.",{}],
+["parking","Which of these is an illegal place to park?","Qual destes é um local proibido para estacionar?",
+ ["In front of a driveway.","Em frente a uma entrada de garagem."],
+ ["Next to a green curb, within the time limit.","Junto a um meio-fio verde, dentro do tempo limite."],
+ ["On the right side of a two-way street, facing the direction of traffic.","No lado direito de uma rua de mão dupla, no sentido do trânsito."],
+ "Também é proibido: sobre calçada ou faixa, em túnel ou ponte (salvo placa), na contramão e entre safety zone e meio-fio.",{}],
+
+// ---------------- FREEWAY & PASSING ----------------
+["freeway","What speed should you be driving when you merge onto a freeway?","A que velocidade você deve estar ao entrar em uma freeway?",
+ ["At or near the speed of freeway traffic.","Na velocidade do trânsito da freeway, ou próxima dela."],
+ ["10 to 15 mph slower than freeway traffic.","10 a 15 mph abaixo do trânsito da freeway."],
+ ["Faster than freeway traffic, so you can get ahead.","Mais rápido que o trânsito da freeway, para ficar à frente."],
+ "Use a pista de aceleração para igualar a velocidade do fluxo.",{}],
+["freeway","When you merge onto a freeway, who has the right-of-way?","Ao entrar em uma freeway, quem tem a preferência?",
+ ["Traffic already on the freeway.","O trânsito que já está na freeway."],
+ ["The vehicle that is merging.","O veículo que está entrando."],
+ ["Whichever vehicle is larger.","O veículo maior."],
+ "Quem já está na freeway tem preferência.",{}],
+["freeway","What should you avoid doing on a freeway on-ramp?","O que você deve evitar fazer em um acesso de freeway?",
+ ["Stopping before you merge, unless it is absolutely necessary.","Parar antes de entrar, a menos que seja absolutamente necessário."],
+ ["Using your turn signal.","Usar a seta."],
+ ["Looking over your shoulder.","Olhar por cima do ombro."],
+ "Parar no acesso é perigoso: você fica sem velocidade para entrar no fluxo.",{}],
+["freeway","How long should you signal before you change lanes on a freeway?","Por quanto tempo você deve dar seta antes de mudar de faixa em uma freeway?",
+ ["At least 5 seconds.","Pelo menos 5 segundos."],
+ ["At least 1 second.","Pelo menos 1 segundo."],
+ ["At least 15 seconds.","Pelo menos 15 segundos."],
+ "Freeway: seta por pelo menos 5 segundos antes da mudança de faixa.",{}],
+["freeway","You miss your freeway exit. What should you do?","Você perdeu a saída da freeway. O que fazer?",
+ ["Continue to the next exit.","Seguir até a próxima saída."],
+ ["Stop and back up along the shoulder.","Parar e dar ré pelo acostamento."],
+ ["Make a U-turn through the center divider.","Fazer retorno pelo canteiro central."],
+ "Nunca dê ré nem retorne na freeway. Vá até a próxima saída.",{}],
+["freeway","When may you pass another vehicle on the right?","Quando você pode ultrapassar outro veículo pela direita?",
+ ["On a road with two or more lanes going in your direction, or when the driver ahead is turning left, without leaving the road.","Em via com duas ou mais faixas no seu sentido, ou quando o motorista à frente vai virar à esquerda, sem sair da pista."],
+ ["Whenever the vehicle ahead is driving below the speed limit.","Sempre que o veículo à frente estiver abaixo do limite."],
+ ["On any road, as long as you use the shoulder.","Em qualquer via, desde que use o acostamento."],
+ "Pela direita só com faixa disponível, em mão única, ou se o da frente vira à esquerda. Nunca pelo acostamento.",{}],
+["freeway","When is it legal to drive off the paved road to pass another vehicle?","Quando é permitido sair da parte pavimentada da via para ultrapassar outro veículo?",
+ ["Never.","Nunca."],
+ ["When the vehicle ahead is turning left.","Quando o veículo à frente vai virar à esquerda."],
+ ["When the shoulder is wide enough.","Quando o acostamento é largo o bastante."],
+ "Proibido usar acostamento ou área não pavimentada para ultrapassar.",{}],
+["freeway","You should not pass another vehicle when you are within how many feet of an intersection, bridge, tunnel, or railroad crossing?","Você não deve ultrapassar quando estiver a quantos pés de um cruzamento, ponte, túnel ou cruzamento ferroviário?",
+ ["100 feet.","100 pés."],
+ ["25 feet.","25 pés."],
+ ["500 feet.","500 pés."],
+ "Não ultrapasse a menos de 100 pés desses locais.",{}],
+["freeway","To pass safely on a two-lane road, how far ahead must a hill or curve be?","Para ultrapassar com segurança em via de duas faixas, a que distância à frente deve estar uma ladeira ou curva?",
+ ["At least one-third of a mile.","Pelo menos um terço de milha."],
+ ["At least 100 feet.","Pelo menos 100 pés."],
+ ["At least two miles.","Pelo menos duas milhas."],
+ "Ladeira ou curva deve estar a pelo menos 1/3 de milha.",{}],
+["freeway","Another driver is passing you. What should you do?","Outro motorista está ultrapassando você. O que fazer?",
+ ["Stay in your lane and do not speed up.","Manter-se na faixa e não acelerar."],
+ ["Speed up so the driver cannot pass.","Acelerar para ele não conseguir passar."],
+ ["Move toward the passing vehicle to make it hurry.","Aproximar-se do veículo para apressá-lo."],
+ "Sendo ultrapassado: mantenha posição e velocidade.",{}],
+["freeway","The driver ahead of you is signaling a left turn. May you pass on the left?","O motorista à frente está dando seta para a esquerda. Você pode ultrapassar pela esquerda?",
+ ["No, never.","Não, nunca."],
+ ["Yes, if you honk first.","Sim, se buzinar antes."],
+ ["Yes, if the road is wide.","Sim, se a via for larga."],
+ "Nunca ultrapasse pela esquerda quem sinaliza conversão à esquerda.",{}],
+["freeway","From a full stop, about how large a gap do you need to enter traffic on a city street?","Partindo de uma parada total, que espaço aproximado você precisa para entrar no trânsito em uma rua da cidade?",
+ ["About half a block (around 150 feet).","Cerca de meio quarteirão (uns 150 pés)."],
+ ["About one car length.","Cerca de um comprimento de carro."],
+ ["About 25 feet.","Cerca de 25 pés."],
+ "Meio quarteirão na cidade; um quarteirão inteiro (uns 300 pés) em rodovia.",{}],
+["freeway","A police vehicle ahead is weaving across the freeway lanes with its lights on to slow traffic. What should you do?","Uma viatura à frente faz zigue-zague pelas faixas da freeway com as luzes ligadas para reduzir o trânsito. O que fazer?",
+ ["Turn on your flashers, slow down, and do not pass the police vehicle.","Ligar o pisca-alerta, reduzir e não ultrapassar a viatura."],
+ ["Change lanes and pass on the right.","Mudar de faixa e ultrapassar pela direita."],
+ ["Stop in your lane right away.","Parar na sua faixa imediatamente."],
+ "'Traffic break': acompanhe a velocidade da viatura e não a ultrapasse.",{}],
+["freeway","Your vehicle breaks down on the freeway and you pull onto the right shoulder. Which side should you get out on?","Seu veículo quebra na freeway e você encosta no acostamento direito. Por qual lado deve sair?",
+ ["The right side, away from traffic.","Pelo lado direito, longe do trânsito."],
+ ["The left side, so drivers can see you.","Pelo lado esquerdo, para os motoristas verem você."],
+ ["Either side is equally safe.","Qualquer lado é igualmente seguro."],
+ "Saia pelo lado direito e, se possível, aguarde dentro do veículo com o cinto.",{}],
+["freeway","How does weaving in and out of freeway lanes during heavy traffic affect your trip?","Como ficar trocando de faixa na freeway com trânsito pesado afeta a sua viagem?",
+ ["It raises the risk of a collision and saves little or no time.","Aumenta o risco de colisão e economiza pouco ou nenhum tempo."],
+ ["It improves traffic flow for everyone.","Melhora o fluxo para todos."],
+ ["It is the safest way to keep a space cushion.","É a forma mais segura de manter espaço ao redor."],
+ "Costurar no trânsito não compensa.",{}]
+);
+
+Q.push(
+// ---------------- SAFE DRIVING: SCANNING, SPACE, PRACTICES ----------------
+["safe","How far ahead of your vehicle should you scan the road?","A que distância à frente do veículo você deve observar a via?",
+ ["At least 10 seconds ahead.","Pelo menos 10 segundos à frente."],
+ ["About 2 seconds ahead.","Cerca de 2 segundos à frente."],
+ ["Only as far as the vehicle in front of you.","Somente até o veículo à sua frente."],
+ "Olhe 10 segundos à frente e mantenha os olhos em movimento.",{}],
+["safe","What is the 'three-second rule' used for?","Para que serve a 'regra dos três segundos'?",
+ ["To keep a safe following distance behind the vehicle ahead.","Para manter distância segura do veículo à frente."],
+ ["To decide how long to signal before a turn.","Para decidir por quanto tempo dar seta antes de virar."],
+ ["To time how long you stop at a stop sign.","Para medir quanto tempo parar em uma placa de STOP."],
+ "Três segundos de distância do veículo da frente, no mínimo.",{}],
+["safe","The vehicle ahead passes a sign and you reach the same sign two seconds later. What does this tell you?","O veículo à frente passa por uma placa e você chega à mesma placa dois segundos depois. O que isso indica?",
+ ["You are following too closely.","Você está perto demais."],
+ ["You are at a safe following distance.","Você está a uma distância segura."],
+ ["You are too far back and should speed up.","Você está longe demais e deve acelerar."],
+ "Menos de três segundos = distância insuficiente.",{}],
+["safe","A driver is tailgating you. What should you do?","Um motorista está colado na sua traseira. O que fazer?",
+ ["Keep your speed steady and, when it is safe, move to the right to let the driver pass.","Manter a velocidade constante e, quando for seguro, ir para a direita para deixá-lo passar."],
+ ["Tap your brakes hard to warn the driver.","Frear forte para avisá-lo."],
+ ["Speed up to get away from the driver.","Acelerar para se afastar dele."],
+ "Com 'tailgater': não freie bruscamente; abra passagem quando puder.",{}],
+["safe","When should you leave more than a three-second following distance?","Quando você deve deixar mais de três segundos de distância?",
+ ["When the road is slippery or you cannot see well ahead.","Quando a pista está escorregadia ou a visibilidade à frente é ruim."],
+ ["When traffic is light and the road is dry.","Quando o trânsito está leve e a pista seca."],
+ ["When you are driving below the speed limit in the city.","Quando está abaixo do limite na cidade."],
+ "Aumente a distância com chuva, neblina, atrás de motos e de veículos grandes, ou rebocando.",{}],
+["safe","How do you check your blind spots?","Como você verifica os pontos cegos?",
+ ["Turn your head and look over your shoulder.","Virando a cabeça e olhando por cima do ombro."],
+ ["Look only in the rearview mirror.","Olhando apenas no retrovisor interno."],
+ ["Lean forward and look in the side mirror.","Inclinando-se para a frente e olhando no espelho lateral."],
+ "Só virando a cabeça você vê o ponto cego.",{}],
+["safe","Another vehicle merges in front of you too closely. What should you do?","Outro veículo entra na sua frente perto demais. O que fazer?",
+ ["Take your foot off the accelerator to open up space.","Tirar o pé do acelerador para abrir espaço."],
+ ["Brake hard and sound your horn.","Frear forte e buzinar."],
+ ["Speed up and pass on the shoulder.","Acelerar e ultrapassar pelo acostamento."],
+ "Alivie o acelerador e recupere a distância sem frear bruscamente.",{}],
+["safe","There is a danger on each side of your vehicle, and one is greater than the other. What should you do?","Há um perigo de cada lado do seu veículo, e um é maior que o outro. O que fazer?",
+ ["Give more room to the greater danger.","Dar mais espaço ao perigo maior."],
+ ["Stay exactly in the middle of your lane.","Ficar exatamente no meio da faixa."],
+ ["Speed up to get past both quickly.","Acelerar para passar logo pelos dois."],
+ "Dê mais espaço ao perigo maior; se possível, enfrente um de cada vez.",{}],
+["safe","May an adult driver talk on a handheld cell phone while driving?","Um motorista adulto pode falar ao celular segurando o aparelho enquanto dirige?",
+ ["No. Adults may only use a phone hands-free.","Não. Adultos só podem usar o telefone no viva-voz (hands-free)."],
+ ["Yes, if the call is shorter than one minute.","Sim, se a ligação durar menos de um minuto."],
+ ["Yes, when driving under 25 mph.","Sim, quando estiver abaixo de 25 mph."],
+ "Celular na mão é ilegal. Adultos: só hands-free, e só se necessário.",{}],
+["safe","May a driver under 18 use a hands-free cell phone while driving?","Um motorista menor de 18 anos pode usar celular no viva-voz enquanto dirige?",
+ ["No, except to call for help in an emergency.","Não, exceto para pedir ajuda em uma emergência."],
+ ["Yes, hands-free devices are legal for all drivers.","Sim, o viva-voz é permitido para todos os motoristas."],
+ ["Yes, if a parent is in the vehicle.","Sim, se um dos pais estiver no veículo."],
+ "Menores de 18: nenhum uso de celular, nem hands-free, salvo emergência.",{}],
+["safe","Your phone rings while you are driving and you have no hands-free device. What should you do?","Seu telefone toca enquanto você dirige e você não tem viva-voz. O que fazer?",
+ ["Let the call go to voicemail.","Deixar a ligação cair na caixa postal."],
+ ["Answer and keep the call short.","Atender e ser breve."],
+ ["Answer only if you are stopped at a red light.","Atender só se estiver parado no sinal vermelho."],
+ "Deixe ir para a caixa postal e retorne depois, parado em local seguro.",{}],
+["safe","Is it legal to read or send a text message while driving?","É permitido ler ou enviar mensagem de texto enquanto dirige?",
+ ["No. It is illegal to write, send, or read texts while driving.","Não. É ilegal escrever, enviar ou ler mensagens enquanto dirige."],
+ ["Yes, if you are driving slower than 15 mph.","Sim, se estiver a menos de 15 mph."],
+ ["Yes, if you hold the phone above the steering wheel.","Sim, se segurar o telefone acima do volante."],
+ "Texto ao volante é ilegal.",{}],
+["safe","Which of these is illegal while driving?","Qual destas ações é ilegal ao dirigir?",
+ ["Wearing a headset or earplugs in both ears.","Usar fones ou tampões nos dois ouvidos."],
+ ["Listening to the radio.","Ouvir rádio."],
+ ["Wearing sunglasses during the day.","Usar óculos escuros de dia."],
+ "Fones/tampões nos dois ouvidos são proibidos: você precisa ouvir sirenes e buzinas.",{}],
+["safe","When should you use your horn?","Quando você deve usar a buzina?",
+ ["To avoid a collision or to warn others of a hazard.","Para evitar uma colisão ou avisar os outros de um perigo."],
+ ["To tell a slow driver to hurry up.","Para apressar um motorista lento."],
+ ["To greet a driver you know.","Para cumprimentar um motorista conhecido."],
+ "Buzina é para segurança, não para demonstrar irritação.",{}],
+["safe","On a narrow mountain road, when should you sound your horn?","Em uma estrada de montanha estreita, quando você deve buzinar?",
+ ["When you cannot see at least 200 feet ahead.","Quando não enxergar pelo menos 200 pés à frente."],
+ ["Every time you pass a parked vehicle.","Sempre que passar por um veículo estacionado."],
+ ["Only when you are driving downhill.","Somente quando estiver descendo."],
+ "Montanha sem visibilidade de 200 pés: buzine para avisar quem vem.",{}],
+["safe","Where should your hands be on the steering wheel for normal driving?","Onde suas mãos devem ficar no volante na direção normal?",
+ ["At 9 and 3 o'clock, or at 8 and 4 o'clock.","Nas posições 9 e 3 horas, ou 8 e 4 horas."],
+ ["Both at the 12 o'clock position.","As duas na posição 12 horas."],
+ ["One hand at 6 o'clock and the other on the gear shift.","Uma mão em 6 horas e a outra no câmbio."],
+ "9 e 3 ou 8 e 4, reduzindo risco de lesão pelo airbag.",{}],
+["safe","When is it acceptable to steer with only one hand?","Quando é aceitável dirigir com apenas uma mão no volante?",
+ ["When you are backing up and turning to look behind you, or operating a vehicle control.","Ao dar ré virando-se para olhar para trás, ou ao operar um comando do veículo."],
+ ["Whenever you drive on a straight freeway.","Sempre que estiver em uma freeway reta."],
+ ["Whenever you are eating or drinking.","Sempre que estiver comendo ou bebendo."],
+ "Uma mão só em dois casos: ré (mão em 12 horas) e ao acionar comandos.",{}],
+["safe","You see a collision ahead and need to warn the drivers behind you. What should you do?","Você vê uma colisão à frente e precisa avisar os motoristas atrás. O que fazer?",
+ ["Turn on your emergency flashers and tap your brake pedal a few times.","Ligar o pisca-alerta e tocar no freio algumas vezes."],
+ ["Stop suddenly in your lane.","Parar de repente na sua faixa."],
+ ["Turn on your high-beam headlights.","Ligar o farol alto."],
+ "Pisca-alerta + 3 ou 4 toques no freio (ou sinal de braço) avisam quem vem atrás.",{}],
+["safe","One of your tires blows out while you are driving. What should you do?","Um pneu estoura enquanto você dirige. O que fazer?",
+ ["Hold the steering wheel firmly and ease off the accelerator gradually.","Segurar firme o volante e aliviar o acelerador aos poucos."],
+ ["Brake hard right away.","Frear forte imediatamente."],
+ ["Steer sharply toward the shoulder.","Virar bruscamente para o acostamento."],
+ "Pneu estourado: sem freada brusca. Controle o carro, reduza aos poucos e só então encoste.",{}],
+["safe","Your wheels drift off the pavement onto the shoulder. What should you do?","Suas rodas saem do asfalto para o acostamento. O que fazer?",
+ ["Grip the wheel firmly, ease off the accelerator, brake gently, and steer back carefully when it is safe.","Segurar firme o volante, aliviar o acelerador, frear de leve e voltar com cuidado quando for seguro."],
+ ["Turn the wheel sharply to get back on the road.","Virar o volante bruscamente para voltar à pista."],
+ ["Speed up to climb back onto the pavement.","Acelerar para subir de volta ao asfalto."],
+ "Nada de volante brusco: reduza e volte suavemente.",{}],
+["safe","Your vehicle stalls on railroad tracks and a train is coming. What should you do?","Seu veículo morre sobre os trilhos e um trem se aproxima. O que fazer?",
+ ["Get out right away and run away from the tracks at an angle, toward the direction the train is coming from.","Sair imediatamente e correr para longe dos trilhos, na diagonal, na direção de onde o trem vem."],
+ ["Stay in the vehicle and keep trying to start it.","Ficar no veículo e continuar tentando dar partida."],
+ ["Run along the tracks in the same direction the train is going.","Correr ao longo dos trilhos no mesmo sentido do trem."],
+ "Correr em diagonal na direção do trem evita ser atingido pelos destroços. Depois ligue 911.",{}],
+["safe","Why should you never run your engine in a closed garage?","Por que você nunca deve deixar o motor ligado em uma garagem fechada?",
+ ["Carbon monoxide from the exhaust can poison you.","O monóxido de carbono do escapamento pode envenenar você."],
+ ["The engine will overheat within one minute.","O motor superaquece em um minuto."],
+ ["It drains the battery.","Descarrega a bateria."],
+ "Monóxido de carbono é inodoro e mortal.",{}],
+["safe","You start to feel very sleepy while driving. What should you do?","Você começa a sentir muito sono ao dirigir. O que fazer?",
+ ["Pull off the road at a safe place and rest.","Sair da via em local seguro e descansar."],
+ ["Turn up the radio and keep going.","Aumentar o rádio e continuar."],
+ ["Drive faster to get home sooner.","Dirigir mais rápido para chegar logo."],
+ "Sono reduz reflexos e visão. A única solução real é parar e descansar.",{}],
+["safe","Which of these is a safe driving practice?","Qual destas é uma prática de direção segura?",
+ ["Keeping your eyes moving and checking your mirrors often.","Manter os olhos em movimento e checar os espelhos com frequência."],
+ ["Looking only at the vehicle directly in front of you.","Olhar apenas para o veículo logo à frente."],
+ ["Staring at the center line of the road.","Fixar o olhar na linha central da via."],
+ "Não fixe o olhar: varra a pista, os lados e os espelhos.",{}],
+["safe","What is one of the most common causes of traffic collisions?","Qual é uma das causas mais comuns de colisões de trânsito?",
+ ["Driver distraction.","Distração do motorista."],
+ ["Using turn signals too early.","Dar seta cedo demais."],
+ ["Driving with headlights on during the day.","Dirigir com farol ligado de dia."],
+ "Distração (celular, comida, rádio, passageiros) está entre as principais causas.",{}],
+["safe","Another driver is angry and driving aggressively near you. What should you do?","Outro motorista está irritado e dirigindo de forma agressiva perto de você. O que fazer?",
+ ["Avoid eye contact and give that driver plenty of room.","Evitar contato visual e dar bastante espaço a ele."],
+ ["Make eye contact and gesture back.","Encarar e devolver os gestos."],
+ ["Slow down in front of the driver to send a message.","Reduzir na frente dele para dar um recado."],
+ "Não reaja à 'road rage': afaste-se.",{}],
+["safe","When you stop behind another vehicle at a light, how much room should you leave?","Ao parar atrás de outro veículo no sinal, quanto espaço você deve deixar?",
+ ["Enough to see where its rear wheels touch the road.","O suficiente para ver onde as rodas traseiras dele tocam o chão."],
+ ["About one foot.","Cerca de um pé."],
+ ["At least three car lengths.","Pelo menos três comprimentos de carro."],
+ "Ver as rodas traseiras do carro da frente garante espaço para manobrar.",{}],
+["safe","Is it legal to smoke in a vehicle when a minor is inside?","É permitido fumar em um veículo quando há um menor dentro?",
+ ["No, it is illegal at any time.","Não, é ilegal a qualquer momento."],
+ ["Yes, if the windows are open.","Sim, se as janelas estiverem abertas."],
+ ["Yes, if the vehicle is parked.","Sim, se o veículo estiver estacionado."],
+ "Proibido fumar com menor no veículo, parado ou em movimento.",{}],
+["safe","When may people ride in the back of a pickup truck?","Quando pessoas podem viajar na caçamba de uma picape?",
+ ["Only when it has secured seats and they use seat belts.","Somente se houver assentos fixos e elas usarem cinto."],
+ ["Whenever the truck is going under 35 mph.","Sempre que a picape estiver abaixo de 35 mph."],
+ ["Whenever they sit on the floor of the truck bed.","Sempre que sentarem no piso da caçamba."],
+ "Caçamba só com assentos fixos e cintos.",{}],
+["safe","You carry a dog in the open back of a pickup truck. What does the law require?","Você leva um cachorro na caçamba aberta de uma picape. O que a lei exige?",
+ ["The animal must be properly secured so it cannot fall, jump, or be thrown out.","O animal deve estar bem preso para não cair, pular ou ser arremessado."],
+ ["The animal must wear a reflective collar.","O animal deve usar coleira refletiva."],
+ ["Nothing, if you drive under 45 mph.","Nada, se você dirigir abaixo de 45 mph."],
+ "Animal na caçamba precisa estar preso.",{}],
+["safe","Your load extends more than 4 feet past your rear bumper. How must you mark it during the day?","Sua carga ultrapassa o para-choque traseiro em mais de 4 pés. Como deve sinalizá-la de dia?",
+ ["With a 12-inch red or fluorescent orange square flag.","Com uma bandeira quadrada de 12 polegadas, vermelha ou laranja fluorescente."],
+ ["With a white cloth of any size.","Com um pano branco de qualquer tamanho."],
+ ["It needs no marking during the day.","Não precisa de sinalização de dia."],
+ "Mais de 4 pés para trás: bandeira vermelha/laranja de dia; duas luzes vermelhas à noite.",{}],
+["safe","Your brakes get wet after you drive through deep water. How can you dry them?","Seus freios molham depois de passar por água funda. Como secá-los?",
+ ["Lightly press the accelerator and the brake pedal at the same time.","Pressionar de leve o acelerador e o freio ao mesmo tempo."],
+ ["Pump the brake pedal hard several times.","Bombear o freio com força várias vezes."],
+ ["Drive at high speed for a few minutes.","Dirigir em alta velocidade por alguns minutos."],
+ "Acelerador e freio de leve juntos geram calor e secam os freios.",{}],
+["safe","Is it legal to drive to the scene of a fire, collision, or other disaster just to look?","É permitido dirigir até o local de um incêndio, colisão ou desastre só para olhar?",
+ ["No. You can be arrested, because you may get in the way of emergency crews.","Não. Você pode ser preso, pois pode atrapalhar as equipes de emergência."],
+ ["Yes, if you park at least 100 feet away.","Sim, se estacionar a pelo menos 100 pés."],
+ ["Yes, if you stay inside your vehicle.","Sim, se ficar dentro do veículo."],
+ "Curiosos atrapalham o resgate. É infração sujeita a prisão.",{}],
+["safe","You see a video screen in a vehicle. When may it be visible to the driver while driving?","Há uma tela de vídeo no veículo. Quando ela pode ficar visível ao motorista durante a condução?",
+ ["Only when it shows vehicle information, navigation, or media player controls.","Somente quando mostra informações do veículo, navegação ou controles de mídia."],
+ ["When the sound is turned off.","Quando o som está desligado."],
+ ["When a passenger is watching it too.","Quando um passageiro também está assistindo."],
+ "Vídeo de entretenimento visível ao motorista é proibido.",{}],
+["safe","What is the penalty for dumping or abandoning an animal on a highway?","Qual é a penalidade por abandonar um animal em uma rodovia?",
+ ["A fine of up to $1,000, six months in jail, or both.","Multa de até US$ 1.000, seis meses de prisão, ou ambos."],
+ ["A warning for the first offense.","Advertência na primeira vez."],
+ ["A fine of $50.","Multa de US$ 50."],
+ "Abandono de animal: até US$ 1.000 e/ou 6 meses de prisão.",{}],
+
+// ---------------- WEATHER & NIGHT ----------------
+["weather","When must you use your headlights?","Quando você é obrigado a usar os faróis?",
+ ["From 30 minutes after sunset until 30 minutes before sunrise.","De 30 minutos após o pôr do sol até 30 minutos antes do nascer do sol."],
+ ["Only from one hour after sunset.","Somente a partir de uma hora após o pôr do sol."],
+ ["Only when street lights are off.","Somente quando a iluminação pública está apagada."],
+ "Faróis: 30 min após o pôr do sol até 30 min antes do nascer.",{}],
+["weather","It is raining and you need to use your windshield wipers. What else must you do?","Está chovendo e você precisa usar o limpador de para-brisa. O que mais deve fazer?",
+ ["Turn on your low-beam headlights.","Ligar o farol baixo."],
+ ["Turn on your parking lights only.","Ligar apenas a luz de posição."],
+ ["Turn on your emergency flashers.","Ligar o pisca-alerta."],
+ "Limpador ligado = farol baixo ligado. É lei.",{}],
+["weather","You must turn on your headlights when you cannot see clearly from what distance?","Você deve ligar os faróis quando não enxerga com clareza a que distância?",
+ ["1,000 feet.","1.000 pés."],
+ ["100 feet.","100 pés."],
+ ["2,500 feet.","2.500 pés."],
+ "Visibilidade inferior a 1.000 pés: faróis ligados.",{}],
+["weather","When must you dim your high beams for an oncoming vehicle?","Quando você deve baixar o farol alto para um veículo em sentido contrário?",
+ ["Within 500 feet of the vehicle.","A até 500 pés do veículo."],
+ ["Within 100 feet of the vehicle.","A até 100 pés do veículo."],
+ ["Only if the other driver flashes the lights.","Somente se o outro motorista piscar o farol."],
+ "Farol baixo a 500 pés de quem vem de frente.",{}],
+["weather","When must you dim your high beams for a vehicle you are following?","Quando você deve baixar o farol alto ao seguir outro veículo?",
+ ["Within 300 feet of the vehicle.","A até 300 pés do veículo."],
+ ["Within 50 feet of the vehicle.","A até 50 pés do veículo."],
+ ["Within 1,000 feet of the vehicle.","A até 1.000 pés do veículo."],
+ "Farol baixo a 300 pés de quem vai à frente.",{}],
+["weather","An oncoming driver does not dim the high beams. What should you do?","Um motorista em sentido contrário não baixa o farol alto. O que fazer?",
+ ["Look toward the right edge of your lane.","Olhar para a borda direita da sua faixa."],
+ ["Turn on your own high beams and leave them on.","Ligar o seu farol alto e deixá-lo ligado."],
+ ["Look straight at the oncoming headlights.","Olhar diretamente para os faróis que vêm."],
+ "Não revide. Olhe para a direita e acompanhe o outro veículo pela visão periférica.",{}],
+["weather","Which lights should you use when driving in fog?","Que luzes você deve usar ao dirigir na neblina?",
+ ["Low-beam headlights.","Farol baixo."],
+ ["High-beam headlights.","Farol alto."],
+ ["Parking lights only.","Somente a luz de posição."],
+ "Farol alto reflete na neblina e ofusca você mesmo. Use o baixo.",{}],
+["weather","The fog becomes so thick that you can barely see. What should you do?","A neblina fica tão densa que você mal enxerga. O que fazer?",
+ ["Pull completely off the road, turn on your emergency flashers, and wait.","Sair totalmente da via, ligar o pisca-alerta e esperar."],
+ ["Stop in your lane and turn off your lights.","Parar na sua faixa e apagar as luzes."],
+ ["Follow closely behind the vehicle ahead.","Seguir colado no veículo da frente."],
+ "Neblina muito densa: saia da pista e espere melhorar.",{}],
+["weather","Is it legal to drive with only your parking lights on?","É permitido dirigir apenas com a luz de posição ligada?",
+ ["No, it is never legal.","Não, nunca é permitido."],
+ ["Yes, at dusk.","Sim, ao entardecer."],
+ ["Yes, in light rain.","Sim, com chuva fraca."],
+ "Luz de posição (parking lights) sozinha não substitui farol.",{}],
+["weather","When is the road most slippery during a rainstorm?","Quando a pista fica mais escorregadia durante uma chuva?",
+ ["During the first few minutes of rain, especially after a dry spell.","Nos primeiros minutos de chuva, principalmente após um período seco."],
+ ["After it has rained for several hours.","Depois de várias horas de chuva."],
+ ["Right after the rain stops.","Logo depois que a chuva para."],
+ "No início da chuva, óleo e poeira sobem e formam uma película escorregadia.",{}],
+["weather","Your vehicle starts to hydroplane. What should you do?","Seu veículo começa a aquaplanar. O que fazer?",
+ ["Slow down gradually and do not use the brakes suddenly.","Reduzir gradualmente e não frear de repente."],
+ ["Brake hard to regain traction.","Frear forte para recuperar aderência."],
+ ["Speed up to push through the water.","Acelerar para atravessar a água."],
+ "Aquaplanagem: alivie o acelerador, sem freada brusca.",{}],
+["weather","Your vehicle starts to skid on a slippery road. What should you do?","Seu veículo começa a derrapar em pista escorregadia. O que fazer?",
+ ["Take your foot off the accelerator, do not brake, and steer in the direction of the skid.","Tirar o pé do acelerador, não frear e virar o volante na direção da derrapagem."],
+ ["Brake hard and hold the wheel straight.","Frear forte e manter o volante reto."],
+ ["Accelerate and steer away from the skid.","Acelerar e virar para o lado oposto ao da derrapagem."],
+ "Derrapou: sem acelerador, sem freio, volante para o lado em que a traseira foi.",{}],
+["weather","The road ahead is flooded. What should you do?","A via à frente está alagada. O que fazer?",
+ ["Find another route if you can. If you must cross, drive slowly and test your brakes afterward.","Procurar outro caminho, se puder. Se tiver de atravessar, ir devagar e testar os freios depois."],
+ ["Drive through quickly so water does not enter the engine.","Atravessar rápido para a água não entrar no motor."],
+ ["Follow the vehicle ahead closely.","Seguir colado no veículo da frente."],
+ "Não dá para avaliar a profundidade só de olhar.",{}],
+["weather","You are driving in very strong winds. What should you do?","Você está dirigindo com vento muito forte. O que fazer?",
+ ["Slow down, hold the wheel firmly, and do not use cruise control.","Reduzir, segurar firme o volante e não usar o piloto automático."],
+ ["Speed up to get out of the wind sooner.","Acelerar para sair logo do vento."],
+ ["Drive next to large trucks to block the wind.","Andar ao lado de caminhões grandes para bloquear o vento."],
+ "Vento forte: menos velocidade, mãos firmes, sem cruise control.",{}],
+["weather","How fast should you drive at night?","A que velocidade você deve dirigir à noite?",
+ ["Slowly enough to stop within the distance lit by your headlights.","Devagar o bastante para parar dentro da distância iluminada pelos faróis."],
+ ["At the posted limit, no matter how far you can see.","No limite sinalizado, independentemente de quanto você enxerga."],
+ ["Faster than in daytime, because there is less traffic.","Mais rápido que de dia, porque há menos trânsito."],
+ "Não 'ultrapasse' o alcance dos faróis.",{}],
+["weather","You are driving on a mountain road or through a tunnel on a sunny day. Should you use your headlights?","Você está em uma estrada de montanha ou em um túnel em um dia de sol. Deve usar os faróis?",
+ ["Yes, so other drivers can see you.","Sim, para que os outros motoristas vejam você."],
+ ["No, headlights are only for night driving.","Não, farol é só para dirigir à noite."],
+ ["Only if it starts to rain.","Somente se começar a chover."],
+ "Montanha e túnel: faróis ligados mesmo com sol.",{}],
+["weather","At night, a vehicle with only one light is coming toward you. What should you do?","À noite, um veículo com apenas uma luz vem em sua direção. O que fazer?",
+ ["Drive as far to the right as possible.","Ir o mais à direita possível."],
+ ["Assume it is a motorcycle and stay near the center line.","Supor que é uma moto e ficar perto da linha central."],
+ ["Flash your high beams until it stops.","Piscar o farol alto até ele parar."],
+ "Pode ser bicicleta, moto ou um carro com um farol queimado. Afaste-se para a direita.",{}],
+["weather","You leave a brightly lit place at night. What should you do?","Você sai de um local muito iluminado à noite. O que fazer?",
+ ["Drive slowly until your eyes adjust to the dark.","Dirigir devagar até os olhos se acostumarem ao escuro."],
+ ["Turn on your interior light.","Ligar a luz interna."],
+ ["Drive at your normal speed.","Dirigir na velocidade normal."],
+ "Os olhos levam um tempo para se adaptar à escuridão.",{}],
+
+// ---------------- SHARING THE ROAD ----------------
+["sharing","How much space must you leave when you pass a bicyclist?","Quanto espaço você deve deixar ao ultrapassar um ciclista?",
+ ["At least 3 feet.","Pelo menos 3 pés."],
+ ["At least 1 foot.","Pelo menos 1 pé."],
+ ["Whatever fits within your lane.","O que couber dentro da sua faixa."],
+ "Lei dos 3 pés para ultrapassar ciclistas.",{}],
+["sharing","You cannot leave 3 feet of space to pass a bicyclist. What should you do?","Você não consegue deixar 3 pés para ultrapassar um ciclista. O que fazer?",
+ ["Slow down and wait until you can pass safely.","Reduzir e esperar até poder ultrapassar com segurança."],
+ ["Honk so the bicyclist moves over.","Buzinar para o ciclista dar espaço."],
+ ["Pass closely at a higher speed.","Ultrapassar de perto em velocidade maior."],
+ "Sem 3 pés disponíveis, espere.",{}],
+["sharing","What rights do bicyclists have on the road?","Que direitos os ciclistas têm na via?",
+ ["The same rights and responsibilities as vehicle drivers.","Os mesmos direitos e deveres dos motoristas."],
+ ["Only the right to ride on sidewalks.","Apenas o direito de andar nas calçadas."],
+ ["They must always yield to motor vehicles.","Devem sempre dar preferência aos veículos motorizados."],
+ "Ciclista é tratado como condutor de veículo.",{}],
+["sharing","You are driving next to a large truck and cannot see the truck's side mirrors. What does this mean?","Você está ao lado de um caminhão grande e não enxerga os espelhos laterais dele. O que isso significa?",
+ ["The truck driver cannot see you.","O motorista do caminhão não vê você."],
+ ["The truck is about to stop.","O caminhão está prestes a parar."],
+ ["You are at a safe distance.","Você está a uma distância segura."],
+ "Se você não vê os espelhos do caminhão, está no ponto cego dele.",{}],
+["sharing","Why should you not cut in front of a large truck and then slow down?","Por que você não deve entrar na frente de um caminhão grande e depois reduzir?",
+ ["Large trucks take longer to stop than cars.","Caminhões grandes levam mais distância para parar do que carros."],
+ ["Trucks always have the right-of-way.","Caminhões sempre têm preferência."],
+ ["Trucks cannot change lanes.","Caminhões não podem mudar de faixa."],
+ "A 55 mph um carro para em cerca de 300 pés; um caminhão pode precisar de 400.",{}],
+["sharing","A large truck ahead of you is signaling a right turn. What should you expect?","Um caminhão grande à sua frente dá seta para a direita. O que esperar?",
+ ["It may swing wide to the left before turning, so do not pass on its right.","Ele pode abrir para a esquerda antes de virar; não ultrapasse pela direita dele."],
+ ["It will turn from the curb lane and leave room for you on the right.","Ele vai virar pela faixa do meio-fio e deixar espaço para você à direita."],
+ ["It will stop to let you pass first.","Ele vai parar para você passar primeiro."],
+ "Caminhões abrem a curva. Não se coloque entre o caminhão e o meio-fio.",{}],
+["sharing","Is it legal for motorcycles to ride between lanes of traffic (lane splitting) in California?","Na Califórnia, é permitido motos passarem entre as faixas (lane splitting)?",
+ ["Yes, it is legal.","Sim, é permitido."],
+ ["No, it is always illegal.","Não, é sempre ilegal."],
+ ["Only on streets with a 25 mph limit.","Somente em ruas com limite de 25 mph."],
+ "Lane splitting é legal na Califórnia. Cheque espelhos antes de mudar de faixa.",{}],
+["sharing","How much of the lane should you give a motorcycle?","Quanto da faixa você deve deixar para uma moto?",
+ ["The full lane. Never share the lane to pass.","A faixa inteira. Nunca divida a faixa para ultrapassar."],
+ ["Half the lane.","Metade da faixa."],
+ ["Just enough room to pass.","Só o espaço para ultrapassar."],
+ "Moto tem direito à faixa inteira.",{}],
+["sharing","A school bus ahead has stopped and is flashing red lights. What must you do?","Um ônibus escolar à frente parou e está com luzes vermelhas piscando. O que você deve fazer?",
+ ["Stop until the children have crossed and the lights stop flashing.","Parar até as crianças atravessarem e as luzes pararem de piscar."],
+ ["Slow to 15 mph and pass carefully.","Reduzir para 15 mph e passar com cuidado."],
+ ["Stop, then pass when no children are in sight.","Parar e depois passar quando não vir crianças."],
+ "Luz vermelha piscando no ônibus escolar: pare, vindo de qualquer direção.",{}],
+["sharing","A school bus with flashing red lights is stopped on the other side of a divided highway. Must you stop?","Um ônibus escolar com luzes vermelhas piscando está parado do outro lado de uma via dividida. Você precisa parar?",
+ ["No. You do not need to stop on a divided or multilane highway with two or more lanes in each direction.","Não. Não é preciso parar em via dividida ou de várias faixas, com duas ou mais faixas por sentido."],
+ ["Yes, you must always stop.","Sim, sempre é preciso parar."],
+ ["Only if children are walking near the bus.","Somente se houver crianças andando perto do ônibus."],
+ "Exceção: via dividida ou com duas ou mais faixas por sentido, ônibus do outro lado.",{}],
+["sharing","A school bus ahead turns on flashing yellow lights. What should you do?","Um ônibus escolar à frente liga luzes amarelas piscantes. O que fazer?",
+ ["Slow down and get ready to stop.","Reduzir e preparar-se para parar."],
+ ["Pass the bus before it stops.","Ultrapassar o ônibus antes que ele pare."],
+ ["Stop at once, wherever you are.","Parar imediatamente, onde estiver."],
+ "Amarelo piscando: o ônibus vai parar. Vermelho piscando: pare.",{}],
+["sharing","What can happen if you pass a school bus that is flashing red lights?","O que pode acontecer se você ultrapassar um ônibus escolar com luzes vermelhas piscando?",
+ ["A fine of up to $1,000 and suspension of your driving privilege for one year.","Multa de até US$ 1.000 e suspensão do direito de dirigir por um ano."],
+ ["A warning letter from the school.","Uma carta de advertência da escola."],
+ ["A fine of $25.","Multa de US$ 25."],
+ "Penalidade pesada: até US$ 1.000 e suspensão de 1 ano.",{}],
+["sharing","You are approaching a stopped emergency vehicle or tow truck with flashing lights on the side of the freeway. What must you do?","Você se aproxima de um veículo de emergência ou guincho parado com luzes piscando na lateral da freeway. O que deve fazer?",
+ ["Move over a lane if it is safe, or slow down.","Mudar para outra faixa se for seguro, ou reduzir."],
+ ["Keep your lane and speed.","Manter a faixa e a velocidade."],
+ ["Stop behind the vehicle.","Parar atrás do veículo."],
+ "Lei 'Move Over': afaste-se uma faixa ou reduza.",{}],
+["sharing","How closely may you follow an emergency vehicle that has its siren or lights on?","A que distância você pode seguir um veículo de emergência com sirene ou luzes ligadas?",
+ ["No closer than 300 feet.","Não menos que 300 pés."],
+ ["No closer than 50 feet.","Não menos que 50 pés."],
+ ["As closely as you like, to get through traffic.","Tão perto quanto quiser, para furar o trânsito."],
+ "Mantenha pelo menos 300 pés de veículo de emergência em atendimento.",{}],
+["sharing","A light rail vehicle is approaching and you want to turn across the tracks. What should you do?","Um trem leve (light rail) se aproxima e você quer virar cruzando os trilhos. O que fazer?",
+ ["Never turn in front of it. Wait until it has passed.","Nunca virar na frente dele. Esperar ele passar."],
+ ["Turn quickly, because it will slow down for you.","Virar rápido, porque ele vai reduzir por você."],
+ ["Honk and turn.","Buzinar e virar."],
+ "Light rail não consegue parar rápido nem desviar.",{}],
+["sharing","What is a safety zone, and may you drive through it?","O que é uma 'safety zone', e você pode trafegar por ela?",
+ ["An area set aside for pedestrians, marked by raised buttons or markers. Never drive through it.","Uma área reservada a pedestres, marcada por tachões ou marcadores. Nunca trafegue por ela."],
+ ["A lane for slow vehicles. You may use it to pass.","Uma faixa para veículos lentos. Você pode usá-la para ultrapassar."],
+ ["A parking area for buses. You may park there at night.","Uma área de estacionamento de ônibus. Você pode estacionar ali à noite."],
+ "Safety zone é espaço de pedestres (pontos de bonde/ônibus no meio da rua).",{}],
+["sharing","What is true about traffic fines in a road construction zone when workers are present?","O que é verdade sobre multas em zona de obras quando há trabalhadores presentes?",
+ ["Fines are doubled.","As multas são dobradas."],
+ ["Fines are the same as anywhere else.","As multas são as mesmas de qualquer outro lugar."],
+ ["Only warnings are given.","Só são dadas advertências."],
+ "Zona de obras com trabalhadores: multa em dobro (US$ 1.000 ou mais).",{}],
+["sharing","You are approaching a person riding a horse on the road. What should you do?","Você se aproxima de uma pessoa a cavalo na via. O que fazer?",
+ ["Slow down or stop if needed, and do not honk.","Reduzir ou parar se preciso, e não buzinar."],
+ ["Honk to let the rider know you are there.","Buzinar para avisar que você está ali."],
+ ["Pass quickly and closely.","Passar rápido e de perto."],
+ "Assustar cavalos ou gado de propósito é ilegal.",{}],
+["sharing","A person with a flag is directing traffic in a road work zone. When must you obey this person?","Uma pessoa com bandeira orienta o trânsito em uma zona de obras. Quando você deve obedecê-la?",
+ ["At all times.","Sempre."],
+ ["Only if a police officer is also present.","Somente se também houver um policial."],
+ ["Only when orange cones are in the road.","Somente quando houver cones laranja na via."],
+ "Sinalizadores de obras têm autoridade sobre o trânsito.",{}],
+["sharing","When must you obey a school crossing guard?","Quando você deve obedecer a um guarda de travessia escolar?",
+ ["At all times.","Sempre."],
+ ["Only during school hours.","Somente no horário escolar."],
+ ["Only when children are in the crosswalk.","Somente quando houver crianças na faixa."],
+ "Crossing guard: obedeça sempre.",{}],
+["sharing","The red lights at a railroad crossing are flashing. Where must you stop?","As luzes vermelhas de um cruzamento ferroviário estão piscando. Onde você deve parar?",
+ ["At least 15 feet from the nearest track.","A pelo menos 15 pés do trilho mais próximo."],
+ ["Right at the edge of the nearest track.","Bem na borda do trilho mais próximo."],
+ ["At least 5 feet from the nearest track.","A pelo menos 5 pés do trilho mais próximo."],
+ "Pare a pelo menos 15 pés dos trilhos e só siga quando as luzes pararem de piscar.",{}],
+["sharing","The railroad crossing gates are down, but you do not see a train. What should you do?","As cancelas do cruzamento ferroviário estão abaixadas, mas você não vê trem. O que fazer?",
+ ["Stay stopped. Never drive around the gates.","Continuar parado. Nunca contornar as cancelas."],
+ ["Drive around the gates carefully.","Contornar as cancelas com cuidado."],
+ ["Cross if no train comes within one minute.","Cruzar se não vier trem em um minuto."],
+ "Cancela abaixada sem trem: ligue para o número afixado no cruzamento ou 911.",{}],
+["sharing","Traffic is heavy and you must cross railroad tracks before the next intersection. What should you do?","O trânsito está pesado e você precisa cruzar trilhos antes do próximo cruzamento. O que fazer?",
+ ["Wait until you can cross the tracks completely before you go.","Esperar até poder cruzar os trilhos por completo antes de avançar."],
+ ["Stop on the tracks until the light ahead turns green.","Parar sobre os trilhos até o sinal à frente abrir."],
+ ["Follow the vehicle ahead as it crosses.","Seguir o veículo da frente enquanto ele cruza."],
+ "Nunca pare sobre os trilhos.",{}],
+["sharing","A truck ahead of you has a diamond-shaped hazardous materials sign. What should you expect at a railroad crossing?","Um caminhão à sua frente tem uma placa em losango de carga perigosa. O que esperar em um cruzamento ferroviário?",
+ ["The truck will stop before crossing the tracks.","O caminhão vai parar antes de cruzar os trilhos."],
+ ["The truck will speed up to cross quickly.","O caminhão vai acelerar para cruzar rápido."],
+ ["The truck will pull over to let you pass.","O caminhão vai encostar para você passar."],
+ "Ônibus, ônibus escolares e caminhões com carga perigosa param em todo cruzamento ferroviário.",{}],
+
+// ---------------- ALCOHOL & DRUGS ----------------
+["alcohol","It is illegal for a driver 21 or older to drive with a blood alcohol concentration (BAC) of what level or higher?","É ilegal para um motorista de 21 anos ou mais dirigir com concentração de álcool no sangue (BAC) igual ou superior a quanto?",
+ ["0.08%.","0,08%."],
+ ["0.10%.","0,10%."],
+ ["0.05%.","0,05%."],
+ "Adultos (21+): 0,08%.",{t:"bac"}],
+["alcohol","It is illegal for a driver under 21 to drive with a BAC of what level or higher?","É ilegal para um motorista menor de 21 anos dirigir com BAC igual ou superior a quanto?",
+ ["0.01%.","0,01%."],
+ ["0.05%.","0,05%."],
+ ["0.08%.","0,08%."],
+ "Menores de 21: 0,01% (tolerância zero).",{t:"bac"}],
+["alcohol","What is the illegal BAC level for someone driving a vehicle that requires a commercial driver's license?","Qual é o BAC ilegal para quem dirige um veículo que exige habilitação comercial?",
+ ["0.04% or higher.","0,04% ou mais."],
+ ["0.08% or higher.","0,08% ou mais."],
+ ["0.02% or higher.","0,02% ou mais."],
+ "Veículo comercial: 0,04%.",{t:"bac"}],
+["alcohol","What is the illegal BAC level for a driver who is carrying a passenger for hire, such as a rideshare driver?","Qual é o BAC ilegal para um motorista que transporta passageiro pago, como motorista de aplicativo?",
+ ["0.04% or higher.","0,04% ou mais."],
+ ["0.08% or higher.","0,08% ou mais."],
+ ["0.10% or higher.","0,10% ou mais."],
+ "Transporte remunerado de passageiro: 0,04%.",{t:"bac"}],
+["alcohol","What is the illegal BAC level for a driver of any age who is on DUI probation?","Qual é o BAC ilegal para um motorista de qualquer idade que está em liberdade condicional por DUI?",
+ ["0.01% or higher.","0,01% ou mais."],
+ ["0.04% or higher.","0,04% ou mais."],
+ ["0.08% or higher.","0,08% ou mais."],
+ "Em 'DUI probation': 0,01%, qualquer idade.",{t:"bac"}],
+["alcohol","What does California's 'implied consent' law mean?","O que significa a lei de 'consentimento implícito' da Califórnia?",
+ ["By driving in California, you agree to take a breath, blood, or urine test if an officer suspects DUI.","Ao dirigir na Califórnia, você concorda em fazer teste de sopro, sangue ou urina se um policial suspeitar de DUI."],
+ ["You may refuse any chemical test without penalty.","Você pode recusar qualquer teste químico sem penalidade."],
+ ["An officer needs your written consent before any test.","O policial precisa do seu consentimento por escrito antes de qualquer teste."],
+ "Dirigir no estado = aceitar o teste químico quando solicitado.",{}],
+["alcohol","What happens if you refuse to take a chemical test after a DUI arrest?","O que acontece se você se recusar a fazer o teste químico após ser preso por DUI?",
+ ["DMV will suspend or revoke your driving privilege for one year.","O DMV suspenderá ou revogará seu direito de dirigir por um ano."],
+ ["Nothing, because the test is optional.","Nada, porque o teste é opcional."],
+ ["You will only have to pay a small fine.","Você só terá de pagar uma multa pequena."],
+ "Recusa do teste: suspensão ou revogação por 1 ano.",{}],
+["alcohol","Where must you keep an opened container of alcohol in your vehicle?","Onde você deve guardar um recipiente de bebida alcoólica já aberto no veículo?",
+ ["In the trunk, or in a place where passengers do not sit.","No porta-malas, ou em um local onde passageiros não se sentam."],
+ ["In the glove compartment.","No porta-luvas."],
+ ["Under the driver's seat.","Embaixo do banco do motorista."],
+ "Recipiente aberto: só no porta-malas ou área sem passageiros.",{}],
+["alcohol","Is it legal to keep an opened bottle of alcohol in the glove compartment?","É permitido guardar uma garrafa de bebida alcoólica aberta no porta-luvas?",
+ ["No, it is illegal.","Não, é ilegal."],
+ ["Yes, if the glove compartment is locked.","Sim, se o porta-luvas estiver trancado."],
+ ["Yes, if the driver has not been drinking.","Sim, se o motorista não tiver bebido."],
+ "Porta-luvas não vale, nem trancado.",{}],
+["alcohol","May a passenger drink alcohol in a moving car?","Um passageiro pode beber álcool em um carro em movimento?",
+ ["No. It is illegal for drivers and passengers.","Não. É ilegal para motoristas e passageiros."],
+ ["Yes, if the passenger is in the back seat.","Sim, se o passageiro estiver no banco de trás."],
+ ["Yes, if the passenger is 21 or older.","Sim, se o passageiro tiver 21 anos ou mais."],
+ "Exceção apenas para passageiros de ônibus, táxi, camper ou motorhome.",{}],
+["alcohol","You are under 21. When may you carry alcohol inside your vehicle?","Você tem menos de 21 anos. Quando pode levar bebida alcoólica dentro do veículo?",
+ ["Only when a person 21 or older is with you and the container is sealed.","Somente acompanhado de alguém com 21 anos ou mais e com o recipiente lacrado."],
+ ["Whenever the container is in the back seat.","Sempre que o recipiente estiver no banco de trás."],
+ ["Never, under any conditions.","Nunca, em nenhuma hipótese."],
+ "Menor de 21 só transporta álcool lacrado e acompanhado de adulto de 21+ (ou a trabalho).",{}],
+["alcohol","You take a legal prescription medicine that makes you drowsy, and then you drive. What is true?","Você toma um remédio com receita que dá sonolência e depois dirige. O que é verdade?",
+ ["You can be arrested for DUI if the medicine impairs your driving.","Você pode ser preso por DUI se o remédio prejudicar sua direção."],
+ ["It is legal, because a doctor prescribed it.","É legal, porque foi receitado por um médico."],
+ ["It is legal if you drive under the speed limit.","É legal se você dirigir abaixo do limite."],
+ "Remédio com receita ou de balcão também gera DUI se afetar a direção.",{}],
+["alcohol","What is true about cannabis and driving?","O que é verdade sobre cannabis e direção?",
+ ["It is illegal to smoke or eat cannabis products while driving or riding as a passenger.","É ilegal fumar ou ingerir produtos de cannabis ao dirigir ou como passageiro."],
+ ["Passengers may use cannabis if the windows are open.","Passageiros podem usar cannabis se as janelas estiverem abertas."],
+ ["Drivers may use cannabis if they have a medical card.","Motoristas podem usar cannabis se tiverem cartão médico."],
+ "Cannabis segue as mesmas regras do álcool: lacrada ou no porta-malas.",{}],
+["alcohol","Can you be convicted of DUI if your BAC is below 0.08%?","Você pode ser condenado por DUI com BAC abaixo de 0,08%?",
+ ["Yes, if your driving is impaired.","Sim, se a sua direção estiver prejudicada."],
+ ["No, never.","Não, nunca."],
+ ["Only if you are under 21.","Somente se você tiver menos de 21 anos."],
+ "O limite não é salvo-conduto: com direção prejudicada, há DUI mesmo abaixo de 0,08%.",{}],
+["alcohol","How long does a DUI conviction stay on your driver record?","Por quanto tempo uma condenação por DUI fica no seu registro de motorista?",
+ ["10 years.","10 anos."],
+ ["1 year.","1 ano."],
+ ["3 years.","3 anos."],
+ "DUI: 10 anos no registro.",{}],
+["alcohol","You are arrested for DUI and the officer takes your license. What are you given?","Você é preso por DUI e o policial recolhe sua habilitação. O que você recebe?",
+ ["A temporary license valid for 30 days.","Uma habilitação temporária válida por 30 dias."],
+ ["A new license valid for one year.","Uma nova habilitação válida por um ano."],
+ ["Nothing. You may keep driving without a license.","Nada. Você pode continuar dirigindo sem habilitação."],
+ "Administrative Per Se: licença temporária de 30 dias e 10 dias para pedir audiência no DMV.",{}],
+["alcohol","What is the only thing that lowers your blood alcohol level?","Qual é a única coisa que reduz o nível de álcool no sangue?",
+ ["Time.","O tempo."],
+ ["Strong coffee.","Café forte."],
+ ["A cold shower.","Banho frio."],
+ "Só o tempo elimina o álcool do organismo.",{}],
+["alcohol","What can happen when you mix alcohol with medicine?","O que pode acontecer ao misturar álcool com remédio?",
+ ["The combined effect can be much stronger and make driving unsafe.","O efeito combinado pode ser muito mais forte e tornar a direção perigosa."],
+ ["The medicine cancels the effect of the alcohol.","O remédio anula o efeito do álcool."],
+ ["Nothing, if the medicine is sold without a prescription.","Nada, se o remédio for vendido sem receita."],
+ "Álcool + medicamento potencializam os efeitos.",{}],
+
+// ---------------- SEAT BELTS & CHILDREN ----------------
+["belts","Who must wear a seat belt in a passenger vehicle?","Quem deve usar cinto de segurança em um veículo de passeio?",
+ ["The driver and all passengers.","O motorista e todos os passageiros."],
+ ["Only the driver and front-seat passengers.","Somente o motorista e quem vai na frente."],
+ ["Only passengers under 16.","Somente passageiros menores de 16 anos."],
+ "Cinto para todos. O motorista é multado por passageiro menor de 16 sem cinto.",{}],
+["belts","Children under what age must ride in a rear-facing car seat, unless they weigh 40 pounds or more or are 40 inches or taller?","Crianças abaixo de que idade devem viajar em cadeirinha voltada para trás, a menos que pesem 40 libras ou mais ou tenham 40 polegadas ou mais?",
+ ["Under 2 years old.","Menos de 2 anos."],
+ ["Under 4 years old.","Menos de 4 anos."],
+ ["Under 1 year old.","Menos de 1 ano."],
+ "Menores de 2 anos: cadeirinha voltada para trás.",{}],
+["belts","Which children must be secured in a child restraint in the back seat?","Quais crianças devem viajar em dispositivo de retenção infantil no banco de trás?",
+ ["Children under 8 years old, or under 4 feet 9 inches tall.","Crianças com menos de 8 anos, ou com menos de 4 pés e 9 polegadas de altura."],
+ ["Children under 5 years old only.","Somente crianças com menos de 5 anos."],
+ ["Children under 12 years old, or under 5 feet tall.","Crianças com menos de 12 anos, ou com menos de 5 pés de altura."],
+ "Menos de 8 anos ou menos de 4'9\" (cerca de 1,45 m): cadeirinha/assento elevatório no banco de trás.",{}],
+["belts","When may a child use a regular seat belt instead of a child restraint?","Quando uma criança pode usar o cinto comum em vez de dispositivo de retenção infantil?",
+ ["At 8 years old or older, or at least 4 feet 9 inches tall.","Com 8 anos ou mais, ou pelo menos 4 pés e 9 polegadas de altura."],
+ ["At 5 years old, in any seat.","Com 5 anos, em qualquer assento."],
+ ["When the child weighs 30 pounds.","Quando a criança pesar 30 libras."],
+ "8 anos ou 4'9\": pode usar o cinto do veículo, bem ajustado.",{}],
+["belts","Where should you never place a rear-facing child seat?","Onde você nunca deve colocar uma cadeirinha voltada para trás?",
+ ["In the front seat of a vehicle with a passenger airbag.","No banco da frente de um veículo com airbag de passageiro."],
+ ["In the middle of the back seat.","No meio do banco de trás."],
+ ["Behind the driver's seat.","Atrás do banco do motorista."],
+ "O airbag pode ferir gravemente o bebê em cadeirinha voltada para trás.",{}],
+["belts","It is illegal to leave a child of what age alone in a vehicle?","É ilegal deixar sozinha em um veículo uma criança de que idade?",
+ ["6 years old or younger.","6 anos ou menos."],
+ ["10 years old or younger.","10 anos ou menos."],
+ ["3 years old or younger.","3 anos ou menos."],
+ "Criança de até 6 anos só pode ficar no carro supervisionada por alguém de 12 anos ou mais.",{}],
+["belts","How far should you sit from the airbag cover in the steering wheel?","A que distância você deve sentar da tampa do airbag no volante?",
+ ["At least 10 inches.","Pelo menos 10 polegadas."],
+ ["At least 3 inches.","Pelo menos 3 polegadas."],
+ ["At least 24 inches.","Pelo menos 24 polegadas."],
+ "10 polegadas (cerca de 25 cm) entre o centro do volante e o seu peito.",{}],
+["belts","How should the shoulder strap of your seat belt be worn?","Como a faixa diagonal do cinto deve ser usada?",
+ ["Across your shoulder and chest, with little or no slack.","Sobre o ombro e o peito, com pouca ou nenhuma folga."],
+ ["Under your arm.","Embaixo do braço."],
+ ["Behind your back.","Atrás das costas."],
+ "Faixa diagonal sobre o ombro e o peito; faixa abdominal baixa, nos quadris.",{}],
+["belts","How should a pregnant woman wear the lap belt?","Como uma gestante deve usar a faixa abdominal do cinto?",
+ ["As low as possible, under the abdomen.","O mais baixo possível, abaixo do abdômen."],
+ ["Across the middle of the abdomen.","Sobre o meio do abdômen."],
+ ["She should not wear a lap belt.","Ela não deve usar a faixa abdominal."],
+ "Gestante: faixa abdominal abaixo da barriga; diagonal entre os seios e ao lado da barriga.",{}],
+["belts","On a hot day, may you leave a child or a pet in a parked vehicle if the windows are slightly open?","Em um dia quente, você pode deixar uma criança ou um animal em um veículo estacionado com as janelas um pouco abertas?",
+ ["No. It is dangerous and illegal.","Não. É perigoso e ilegal."],
+ ["Yes, for up to 15 minutes.","Sim, por até 15 minutos."],
+ ["Yes, if you park in the shade.","Sim, se estacionar na sombra."],
+ "A temperatura interna sobe muito rápido, mesmo com janela entreaberta.",{}],
+
+// ---------------- DMV RULES, INSURANCE & COLLISIONS ----------------
+["admin","You sell or transfer your vehicle. Within how many days must you notify DMV?","Você vende ou transfere seu veículo. Em quantos dias deve notificar o DMV?",
+ ["5 days.","5 dias."],
+ ["10 days.","10 dias."],
+ ["30 days.","30 dias."],
+ "Vendeu: avise o DMV em 5 dias (Notice of Transfer and Release of Liability).",{t:"sale"}],
+["admin","You buy a vehicle. Within how many days must you transfer ownership to your name?","Você compra um veículo. Em quantos dias deve transferir a propriedade para o seu nome?",
+ ["10 days.","10 dias."],
+ ["5 days.","5 dias."],
+ ["60 days.","60 dias."],
+ "Comprou: 10 dias para transferir. Vendeu: 5 dias para avisar.",{t:"sale"}],
+["admin","You must notify DMV within 5 days when you do which of these?","Você deve notificar o DMV em até 5 dias quando faz qual destas coisas?",
+ ["Sell or transfer your vehicle.","Vende ou transfere seu veículo."],
+ ["Paint your vehicle a different color.","Pinta o veículo de outra cor."],
+ ["Get a traffic ticket.","Recebe uma multa de trânsito."],
+ "Venda ou transferência do veículo: 5 dias.",{t:"sale"}],
+["admin","You move to a new address. Within how many days must you notify DMV?","Você muda de endereço. Em quantos dias deve notificar o DMV?",
+ ["10 days.","10 dias."],
+ ["30 days.","30 dias."],
+ ["90 days.","90 dias."],
+ "Mudança de endereço: 10 dias.",{}],
+["admin","You become a California resident. Within how many days must you get a California driver's license to keep driving?","Você se torna residente da Califórnia. Em quantos dias deve tirar a habilitação californiana para continuar dirigindo?",
+ ["10 days.","10 dias."],
+ ["30 days.","30 dias."],
+ ["One year.","Um ano."],
+ "Novo residente: 10 dias para obter a habilitação da Califórnia.",{}],
+["admin","You are in a collision with more than $1,000 in property damage. What must you do?","Você se envolve em uma colisão com mais de US$ 1.000 em danos materiais. O que deve fazer?",
+ ["File a report (SR 1) with DMV within 10 days.","Enviar um relatório (SR 1) ao DMV em até 10 dias."],
+ ["File a report with DMV within 30 days.","Enviar um relatório ao DMV em até 30 dias."],
+ ["Nothing, if you were not at fault.","Nada, se você não teve culpa."],
+ "SR 1 em 10 dias se houver dano acima de US$ 1.000, ferido ou morte.",{}],
+["admin","Someone is slightly injured in a collision you are involved in. Must you report it to DMV?","Alguém se fere levemente em uma colisão em que você se envolveu. Você deve informar o DMV?",
+ ["Yes, within 10 days, even if the injury is minor.","Sim, em até 10 dias, mesmo que o ferimento seja leve."],
+ ["No, only serious injuries must be reported.","Não, só ferimentos graves precisam ser informados."],
+ ["Only if the police did not come to the scene.","Somente se a polícia não foi ao local."],
+ "Qualquer ferimento, mesmo leve, exige o SR 1 em 10 dias.",{}],
+["admin","Who must file the SR 1 report with DMV after a reportable collision?","Quem deve enviar o relatório SR 1 ao DMV após uma colisão que exige relatório?",
+ ["Each driver involved, no matter who caused it.","Cada motorista envolvido, independentemente de quem causou."],
+ ["Only the driver who caused the collision.","Somente o motorista que causou a colisão."],
+ ["The police officer at the scene.","O policial que atendeu a ocorrência."],
+ "A polícia não envia o SR 1 por você. Cada motorista (ou seu seguro/representante) envia o seu.",{}],
+["admin","You hit a parked car and cannot find the owner. What must you do?","Você bate em um carro estacionado e não encontra o dono. O que deve fazer?",
+ ["Leave a note with your name, phone number, and address, and report the collision to the police.","Deixar um bilhete com seu nome, telefone e endereço e comunicar a colisão à polícia."],
+ ["Wait 10 minutes and then leave.","Esperar 10 minutos e ir embora."],
+ ["Report it only to your insurance company.","Comunicar apenas à sua seguradora."],
+ "Bilhete preso ao veículo + aviso à polícia (ou CHP). Ir embora é 'hit-and-run'.",{}],
+["admin","What is the minimum liability insurance coverage required in California?","Qual é a cobertura mínima de seguro de responsabilidade civil exigida na Califórnia?",
+ ["$30,000 for one death or injury, $60,000 for more than one, and $15,000 for property damage.","US$ 30.000 por uma morte ou ferimento, US$ 60.000 por mais de uma pessoa e US$ 15.000 por danos materiais."],
+ ["$15,000 for one death or injury, $30,000 for more than one, and $5,000 for property damage.","US$ 15.000 por uma morte ou ferimento, US$ 30.000 por mais de uma pessoa e US$ 5.000 por danos materiais."],
+ ["$100,000 for any injury and $50,000 for property damage.","US$ 100.000 por qualquer ferimento e US$ 50.000 por danos materiais."],
+ "Mínimos atuais: 30/60/15 (os antigos 15/30/5 mudaram).",{}],
+["admin","You are in a collision and do not have insurance. What can happen to your driving privilege?","Você se envolve em uma colisão e não tem seguro. O que pode acontecer com seu direito de dirigir?",
+ ["It can be suspended for up to four years, no matter who was at fault.","Pode ser suspenso por até quatro anos, independentemente de quem teve culpa."],
+ ["Nothing, if the other driver caused the collision.","Nada, se o outro motorista causou a colisão."],
+ ["It can be suspended for 30 days.","Pode ser suspenso por 30 dias."],
+ "Colisão sem seguro: suspensão de até 4 anos.",{}],
+["admin","What must you carry with you whenever you drive?","O que você deve levar sempre que dirigir?",
+ ["Proof of financial responsibility (insurance).","Comprovante de responsabilidade financeira (seguro)."],
+ ["Your vehicle's purchase contract.","O contrato de compra do veículo."],
+ ["Your Social Security card.","Seu cartão do Social Security."],
+ "Leve sempre o comprovante de seguro, além da habilitação e do registro.",{}],
+["admin","You are in a collision and no one is hurt. What should you do with your vehicle?","Você se envolve em uma colisão e ninguém se fere. O que fazer com o veículo?",
+ ["Move it out of the traffic lane if you can.","Tirá-lo da faixa de trânsito, se possível."],
+ ["Leave it exactly where it stopped until police arrive.","Deixá-lo exatamente onde parou até a polícia chegar."],
+ ["Drive home and report the collision later.","Ir para casa e comunicar a colisão depois."],
+ "Sem feridos: tire os veículos da pista. Com feridos: ligue 911 imediatamente.",{}],
+["admin","You are involved in a collision. What must you always do?","Você se envolve em uma colisão. O que deve fazer sempre?",
+ ["Stop. Leaving the scene is hit-and-run and carries severe penalties.","Parar. Sair do local é 'hit-and-run' e tem penalidades severas."],
+ ["Stop only if someone is injured.","Parar somente se alguém se ferir."],
+ ["Keep driving if the damage looks minor.","Seguir se o dano parecer pequeno."],
+ "Sempre pare e troque informações: habilitação, registro, seguro e endereço.",{}],
+["admin","DMV may suspend your license as a negligent driver if you get how many points in 12 months?","O DMV pode suspender sua habilitação por direção negligente se você somar quantos pontos em 12 meses?",
+ ["4 points.","4 pontos."],
+ ["2 points.","2 pontos."],
+ ["10 points.","10 pontos."],
+ "4 pontos em 12 meses, 6 em 24 ou 8 em 36.",{}],
+["admin","A driver flees from the police and someone is seriously injured during the pursuit. What can the driver face?","Um motorista foge da polícia e alguém se fere gravemente durante a perseguição. O que ele pode enfrentar?",
+ ["Up to seven years in state prison.","Até sete anos em prisão estadual."],
+ ["A fine of less than $1,000 and no jail time.","Multa inferior a US$ 1.000 e nenhuma prisão."],
+ ["A mandatory driving class only.","Somente um curso de direção obrigatório."],
+ "Fuga com lesão grave: até 7 anos de prisão estadual.",{}],
+["admin","You let an unlicensed person drive your vehicle and that person is caught. What can happen?","Você deixa uma pessoa sem habilitação dirigir seu veículo e ela é flagrada. O que pode acontecer?",
+ ["Your vehicle can be impounded for 30 days.","Seu veículo pode ser apreendido por 30 dias."],
+ ["Nothing happens to the vehicle owner.","Nada acontece com o dono do veículo."],
+ ["You get one point on your record.","Você recebe um ponto no registro."],
+ "Emprestar o carro a quem não tem habilitação: apreensão por 30 dias.",{}],
+["admin","You hit and injure an animal on the road. What should you do?","Você atropela e fere um animal na via. O que fazer?",
+ ["Call the nearest humane society or law enforcement, and do not try to move the animal.","Ligar para a sociedade protetora mais próxima ou para a polícia, e não tentar mover o animal."],
+ ["Move the animal into your vehicle.","Colocar o animal no seu veículo."],
+ ["Leave, because animals are not covered by the law.","Ir embora, porque animais não são cobertos pela lei."],
+ "Não mova nem abandone o animal ferido: acione as autoridades.",{}],
+["admin","You get a traffic ticket and fail to appear in court. What can happen?","Você recebe uma multa de trânsito e não comparece ao tribunal. O que pode acontecer?",
+ ["Your driving privilege can be suspended until you appear.","Seu direito de dirigir pode ser suspenso até você comparecer."],
+ ["The ticket is cancelled after 30 days.","A multa é cancelada após 30 dias."],
+ ["Nothing, if you pay within one year.","Nada, se você pagar em até um ano."],
+ "'Failure to appear' (FTA) pode suspender a habilitação.",{}]
+);
+
+
+// ---------- data ----------
+function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)}
+const BANK=Q.map(r=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
+const QUOTA={signs:3,signals:2,row:3,speed:3,lanes:3,turns:2,parking:3,freeway:2,safe:5,weather:2,sharing:3,alcohol:2,belts:1,admin:2};
+const CAT={signs:["Traffic signs","Placas"],signals:["Traffic signals","Semáforos"],row:["Right-of-way","Preferência"],speed:["Speed limits","Velocidade"],
+  lanes:["Lanes and markings","Faixas e marcações"],turns:["Turns","Conversões"],parking:["Parking","Estacionamento"],freeway:["Freeways and passing","Freeway e ultrapassagem"],
+  safe:["Safe driving","Direção segura"],weather:["Weather and night","Clima e noite"],sharing:["Sharing the road","Dividindo a via"],
+  alcohol:["Alcohol and drugs","Álcool e drogas"],belts:["Seat belts and children","Cinto e crianças"],admin:["DMV rules and collisions","Regras do DMV e colisões"]};
+const TOTAL=36, PASS=30;
+
+// ---------- storage (works without it) ----------
+const mem={};
+function load(k,d){try{const v=localStorage.getItem("dmvca."+k);if(v!==null)return JSON.parse(v)}catch(e){}return k in mem?mem[k]:d}
+function save(k,v){mem[k]=v;try{localStorage.setItem("dmvca."+k,JSON.stringify(v))}catch(e){}}
+
+// ---------- helpers ----------
+const $=s=>document.querySelector(s);
+const app=$("#app");
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function bi(en,pt){return esc(en)+'<span class="pt">('+esc(pt)+')</span>'}
+function clock(s){s=Math.max(0,Math.round(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+
+// ---------- test building ----------
+function take(pool,n,seen){
+  let out=shuffle(pool.filter(q=>!seen.has(q.id))).slice(0,n);
+  if(out.length<n){ // every question in this group has been used: start the group over
+    pool.forEach(q=>seen.delete(q.id));
+    out=out.concat(shuffle(pool.filter(q=>!out.includes(q))).slice(0,n-out.length));
+  }
+  return out;
+}
+function buildTest(){
+  const seen=new Set(load("seen",[]));let t=[];
+  for(const c in QUOTA){
+    const pool=BANK.filter(q=>q.c===c),n=QUOTA[c];
+    const tag=c==="alcohol"?"bac":c==="admin"?"sale":null;
+    if(tag){ // the DMV form always carries one BAC question and one vehicle-sale question
+      t=t.concat(take(pool.filter(q=>q.t===tag),1,seen),take(pool.filter(q=>q.t!==tag),n-1,seen));
+    }else t=t.concat(take(pool,n,seen));
+  }
+  t.forEach(q=>seen.add(q.id));save("seen",[...seen]);
+  return shuffle(t);
+}
+function wrap(list){return list.map(q=>({q,order:shuffle([0,1,2]),pick:null}))}
+
+// ---------- state ----------
+let prefs=Object.assign({mode:"practice",limit:0,pt:true},load("prefs",{}));
+let S=null,tick=null;
+function setPT(){document.body.classList.toggle("nopt",!prefs.pt);const b=$("#ptToggle");b.setAttribute("aria-pressed",prefs.pt);b.textContent=prefs.pt?"PT on":"PT off"}
+$("#ptToggle").onclick=()=>{prefs.pt=!prefs.pt;save("prefs",prefs);setPT()};
+$("#home").onclick=()=>{if(S&&!S.done){S.askQuit=true;renderQ()}else home()};
+
+// ---------- home ----------
+function home(){
+  stopClock();S=null;
+  const hist=load("history",[]),missed=load("missed",[]).filter(id=>BANK.some(q=>q.id===id)),seen=load("seen",[]).length;
+  const seg=(key,val,en,pt)=>'<button type="button" data-k="'+key+'" data-v="'+val+'" aria-pressed="'+(String(prefs[key])===String(val))+'">'+esc(en)+'<small class="pt">('+esc(pt)+')</small></button>';
+  app.innerHTML=
+  '<h1>Knowledge test simulator</h1>'+
+  '<p class="lead">Each test draws a new random set from a bank of '+BANK.length+' questions, in the same mix of topics as the DMV exam.'+
+    '<span class="pt">(Cada simulado sorteia um conjunto novo de um banco de '+BANK.length+' questões, na mesma proporção de temas da prova do DMV.)</span></p>'+
+  '<div class="facts">'+
+    '<div><b>'+TOTAL+'</b><span>questions<span class="pt">(questões)</span></span></div>'+
+    '<div><b>'+PASS+'</b><span>correct to pass<span class="pt">(acertos para passar)</span></span></div>'+
+    '<div><b>3</b><span>choices each<span class="pt">(alternativas)</span></span></div>'+
+    '<div><b>None</b><span>official time limit<span class="pt">(sem limite oficial de tempo)</span></span></div>'+
+  '</div>'+
+  '<div class="panel">'+
+    '<div class="field"><span class="lab">Mode<span class="pt">(Modo)</span></span><div class="seg">'+
+      seg("mode","practice","Practice: see the answer after each question","Treino: mostra a resposta após cada questão")+
+      seg("mode","exam","Exam: results only at the end","Prova: resultado só no final")+'</div></div>'+
+    '<div class="field"><span class="lab">Timer<span class="pt">(Tempo)</span></span><div class="seg">'+
+      seg("limit",0,"No limit, like the real test","Sem limite, como na prova real")+
+      seg("limit",30,"30 minutes","30 minutos")+
+      seg("limit",20,"20 minutes","20 minutos")+'</div></div>'+
+    '<button class="cta" id="start" type="button">Start a new test<small class="pt">(Iniciar novo simulado)</small></button>'+
+    (missed.length?'<button class="second" id="review" type="button">Practice the '+missed.length+' question'+(missed.length>1?'s':'')+' you missed<small class="pt">(Treinar as questões que você errou)</small></button>':'')+
+    '<p class="note">You have seen '+Math.min(seen,BANK.length)+' of '+BANK.length+' questions. New tests use the ones you have not seen first.'+
+      '<span class="pt">(Você já viu '+Math.min(seen,BANK.length)+' de '+BANK.length+' questões. Os novos simulados usam primeiro as que você ainda não viu.)</span></p>'+
+  '</div>'+
+  (hist.length?'<div class="panel"><h2>Your tests<span class="pt">(Seus simulados)</span></h2><table><thead><tr><th>#</th><th>Score</th><th>Result</th><th>Time</th><th>Mode</th></tr></thead><tbody>'+
+    hist.slice(-8).reverse().map(h=>'<tr><td>'+h.n+'</td><td>'+h.score+'/'+h.total+'</td><td><span class="pill '+(h.pass?'good':'bad')+'">'+(h.pass?'PASS':'FAIL')+'</span></td><td>'+clock(h.secs)+'</td><td>'+esc(h.mode)+'</td></tr>').join("")+
+    '</tbody></table></div>':'');
+  app.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{const k=b.dataset.k;prefs[k]=k==="limit"?+b.dataset.v:b.dataset.v;save("prefs",prefs);home()});
+  $("#start").onclick=()=>start(wrap(buildTest()),false);
+  const r=$("#review");if(r)r.onclick=()=>start(wrap(shuffle(BANK.filter(q=>missed.includes(q.id))).slice(0,TOTAL)),true);
+  window.scrollTo(0,0);
+}
+
+// ---------- quiz ----------
+function start(items,review){
+  S={items,pos:0,mode:review?"practice":prefs.mode,review,limit:review?0:prefs.limit*60,t0:Date.now(),done:false,askQuit:false};
+  stopClock();tick=setInterval(updClock,500);renderQ();
+}
+function stopClock(){if(tick){clearInterval(tick);tick=null}}
+function elapsed(){return (Date.now()-S.t0)/1000}
+function updClock(){
+  if(!S||S.done)return;
+  const el=$("#clock");const e=elapsed();
+  if(S.limit){const left=S.limit-e;if(el)el.textContent=clock(left)+" left";if(left<=0)finish()}
+  else if(el)el.textContent=clock(e);
+}
+function renderQ(){
+  const it=S.items[S.pos],q=it.q,n=S.items.length,answered=it.pick!==null;
+  const reveal=S.mode==="practice"&&answered;
+  const wrongSoFar=S.items.filter(x=>x.pick!==null&&x.pick!==0).length;
+  const letters=["A","B","C"];
+  let h='<div class="status"><b>Question '+(S.pos+1)+' of '+n+'</b><span>'+
+    (S.mode==="practice"?'Missed '+wrongSoFar+(S.review?'':' · '+(n-PASS)+' allowed')+' &nbsp;|&nbsp; ':'')+'<span id="clock"></span></span></div>'+
+    '<div class="bar"><i style="width:'+(100*S.pos/n)+'%"></i></div>'+
+    '<span class="chip">'+esc(CAT[q.c][0])+' · '+esc(CAT[q.c][1])+'</span>'+
+    (q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+
+    '<p class="qtext">'+bi(q.q,q.qp)+'</p><div class="opts">';
+  it.order.forEach((oi,k)=>{
+    let cls="opt";
+    if(reveal){if(oi===0)cls+=" right";else if(oi===it.pick)cls+=" wrong"}
+    else if(it.pick===oi)cls+=" sel";
+    h+='<button type="button" class="'+cls+'" data-o="'+oi+'"'+(reveal?' disabled':'')+'><span class="k">'+letters[k]+'</span><span>'+bi(q.opts[oi][0],q.opts[oi][1])+'</span></button>';
+  });
+  h+='</div>';
+  if(reveal){
+    const ok=it.pick===0;
+    h+='<div class="fb'+(ok?'':' bad')+'"><b>'+(ok?'Correct':'Incorrect')+(ok?' · Certo':' · Errado')+'</b>'+esc(q.e)+'</div>';
+  }
+  const last=S.pos===n-1;
+  h+='<div class="actions">'+
+    (S.mode==="exam"&&!last?'<button class="ghost" id="skip" type="button">Skip<span class="pt">(Pular)</span></button>':'')+
+    '<button class="cta" id="next" type="button"'+(answered?'':' disabled')+'>'+(last?'Finish test':'Next question')+'<small class="pt">('+(last?'Finalizar':'Próxima questão')+')</small></button></div>';
+  h+=S.askQuit
+    ?'<div class="panel"><p>Quit this test? Your answers will be lost.<span class="pt">(Sair deste simulado? Suas respostas serão perdidas.)</span></p><div class="row"><button class="second" id="quitYes" type="button">Yes, quit</button><button class="second" id="quitNo" type="button">Keep going</button></div></div>'
+    :'<button class="ghost" id="quit" type="button" style="align-self:flex-start">Quit test</button>';
+  app.innerHTML=h;updClock();
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(reveal)return;it.pick=+b.dataset.o;renderQ()});
+  $("#next").onclick=()=>{if(it.pick===null)return;if(last)finish();else{S.pos++;renderQ();window.scrollTo(0,0)}};
+  const sk=$("#skip");if(sk)sk.onclick=()=>{it.pick=null;S.items.push(S.items.splice(S.pos,1)[0]);renderQ();window.scrollTo(0,0)};
+  const qb=$("#quit");if(qb)qb.onclick=()=>{S.askQuit=true;renderQ()};
+  const qy=$("#quitYes");if(qy){qy.onclick=home;$("#quitNo").onclick=()=>{S.askQuit=false;renderQ()}}
+}
+document.addEventListener("keydown",e=>{
+  if(!S||S.done)return;
+  const k=e.key.toLowerCase(),i={"1":0,"2":1,"3":2,a:0,b:1,c:2}[k];
+  const btns=app.querySelectorAll(".opt");
+  if(i!==undefined&&btns[i]&&!btns[i].disabled)btns[i].click();
+  else if(k==="enter"){const n=$("#next");if(n&&!n.disabled&&document.activeElement.tagName!=="BUTTON")n.click()}
+});
+
+// ---------- results ----------
+function finish(){
+  if(!S||S.done)return;S.done=true;stopClock();
+  const secs=elapsed(),n=S.items.length,score=S.items.filter(x=>x.pick===0).length;
+  const need=S.review?n:PASS,pass=!S.review&&score>=PASS;
+  let missed=new Set(load("missed",[]));
+  S.items.forEach(x=>{if(x.pick===0)missed.delete(x.q.id);else missed.add(x.q.id)});
+  save("missed",[...missed]);
+  if(!S.review){const hist=load("history",[]);hist.push({n:hist.length+1,score,total:n,pass,secs:Math.round(secs),mode:S.mode});save("history",hist.slice(-40))}
+  const wrong=S.items.filter(x=>x.pick!==0);
+  const byCat={};S.items.forEach(x=>{const c=byCat[x.q.c]||(byCat[x.q.c]=[0,0]);c[1]++;if(x.pick===0)c[0]++});
+  let h='<h1>'+(S.review?'Review finished':'Test results')+'<span class="pt" style="font-family:var(--body)">('+(S.review?'Revisão concluída':'Resultado do simulado')+')</span></h1>'+
+    '<div class="panel"><div class="score"><div class="n">'+score+'<span>/'+n+'</span></div>'+
+    (S.review?'':'<span class="verdict '+(pass?'good':'bad')+'">'+(pass?'PASS · APROVADO':'FAIL · REPROVADO')+'</span>')+'</div>'+
+    '<p class="note">'+(S.review?'':'You needed '+need+' correct. You missed '+(n-score)+'; the limit is '+(n-PASS)+'. ')+'Time: '+clock(secs)+'.'+
+    (S.review?'':'<span class="pt">(Eram necessários '+need+' acertos. Você errou '+(n-score)+'; o limite é '+(n-PASS)+'.)</span>')+'</p>'+
+    '<div class="cats">'+Object.keys(byCat).map(c=>'<div><span>'+esc(CAT[c][0])+'</span><b class="'+(byCat[c][0]<byCat[c][1]?'miss':'')+'">'+byCat[c][0]+'/'+byCat[c][1]+'</b></div>').join("")+'</div></div>'+
+    '<div class="row"><button class="cta" id="again" type="button">New test, new questions<small class="pt">(Novo simulado, novas questões)</small></button>'+
+    (wrong.length?'<button class="second" id="retry" type="button">Retry the '+wrong.length+' I missed<small class="pt">(Refazer as que errei)</small></button>':'')+'</div>';
+  if(wrong.length){
+    h+='<div class="panel"><h2>Questions to review<span class="pt">(Questões para revisar)</span></h2>';
+    wrong.forEach(x=>{const q=x.q;
+      h+='<div class="rev">'+(q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+'<div class="q">'+bi(q.q,q.qp)+'</div>'+
+        (x.pick===null?'<div class="a no"><i>Your answer</i>Not answered<span class="pt">(Não respondida)</span></div>':'<div class="a no"><i>Your answer</i>'+bi(q.opts[x.pick][0],q.opts[x.pick][1])+'</div>')+
+        '<div class="a ok"><i>Correct answer</i>'+bi(q.opts[0][0],q.opts[0][1])+'</div><p class="note">'+esc(q.e)+'</p></div>'});
+    h+='</div>';
+  }else h+='<div class="panel"><p>No mistakes on this one.<span class="pt">(Nenhum erro neste.)</span></p></div>';
+  app.innerHTML=h;
+  $("#again").onclick=()=>start(wrap(buildTest()),false);
+  const r=$("#retry");if(r)r.onclick=()=>start(wrap(shuffle(wrong.map(x=>x.q))),true);
+  window.scrollTo(0,0);
+}
+
+// ---------- road signs (standard US sign shapes, drawn inline) ----------
+function sign(id){
+  const Y="#f7c600",R="#c1121f",K="#111",W="#fff";
+  const svg=b=>'<svg viewBox="0 0 120 120" role="img" aria-label="Road sign" xmlns="http://www.w3.org/2000/svg" font-family="Overpass,Arial,sans-serif" font-weight="800" text-anchor="middle">'+b+'</svg>';
+  const dia=(inner,fill)=>'<rect x="22" y="22" width="76" height="76" rx="6" transform="rotate(45 60 60)" fill="'+(fill||Y)+'" stroke="'+K+'" stroke-width="3"/>'+inner;
+  const ban='<circle cx="60" cy="60" r="46" fill="none" stroke="'+R+'" stroke-width="10"/><line x1="27" y1="27" x2="93" y2="93" stroke="'+R+'" stroke-width="10"/>';
+  const plate='<rect x="8" y="8" width="104" height="104" rx="8" fill="'+W+'" stroke="'+K+'" stroke-width="3"/>';
+  switch(id){
+    case "stop":return svg('<polygon points="38,6 82,6 114,38 114,82 82,114 38,114 6,82 6,38" fill="'+R+'"/><polygon points="40,11 80,11 109,40 109,80 80,109 40,109 11,80 11,40" fill="none" stroke="'+W+'" stroke-width="3"/><text x="60" y="73" font-size="36" fill="'+W+'">STOP</text>');
+    case "yield":return svg('<polygon points="6,12 114,12 60,110" fill="'+R+'" stroke="'+R+'" stroke-width="6" stroke-linejoin="round"/><polygon points="30,26 90,26 60,82" fill="'+W+'"/><text x="60" y="46" font-size="15" fill="'+R+'">YIELD</text>');
+    case "dne":return svg('<rect x="4" y="4" width="112" height="112" rx="8" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><circle cx="60" cy="60" r="50" fill="'+R+'"/><rect x="22" y="51" width="76" height="18" fill="'+W+'"/><text x="60" y="42" font-size="15" fill="'+W+'">DO NOT</text><text x="60" y="92" font-size="15" fill="'+W+'">ENTER</text>');
+    case "wrongway":return svg('<rect x="6" y="26" width="108" height="68" rx="6" fill="'+R+'"/><rect x="10" y="30" width="100" height="60" rx="4" fill="none" stroke="'+W+'" stroke-width="3"/><text x="60" y="58" font-size="22" fill="'+W+'">WRONG</text><text x="60" y="82" font-size="22" fill="'+W+'">WAY</text>');
+    case "school":return svg('<polygon points="60,6 110,44 110,112 10,112 10,44" fill="#cfe600" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/><circle cx="47" cy="48" r="7" fill="'+K+'"/><path d="M47 56 L47 82 M47 62 L35 72 M47 62 L58 68 M47 82 L38 100 M47 82 L56 100" stroke="'+K+'" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="76" cy="58" r="6" fill="'+K+'"/><path d="M76 65 L76 84 M76 70 L66 76 M76 70 L86 77 M76 84 L69 100 M76 84 L84 100" stroke="'+K+'" stroke-width="5" stroke-linecap="round" fill="none"/>');
+    case "rrx":return svg('<circle cx="60" cy="60" r="54" fill="'+Y+'" stroke="'+K+'" stroke-width="4"/><path d="M24 24 L96 96 M96 24 L24 96" stroke="'+K+'" stroke-width="11"/><text x="27" y="70" font-size="26" fill="'+K+'">R</text><text x="93" y="70" font-size="26" fill="'+K+'">R</text>');
+    case "crossbuck":return svg('<g transform="rotate(35 60 60)"><rect x="2" y="50" width="116" height="20" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><text x="60" y="65" font-size="13" fill="'+K+'">CROSSING</text></g><g transform="rotate(-35 60 60)"><rect x="2" y="50" width="116" height="20" fill="'+W+'" stroke="'+K+'" stroke-width="2"/><text x="60" y="65" font-size="13" fill="'+K+'">RAILROAD</text></g>');
+    case "signalahead":return svg(dia('<rect x="47" y="30" width="26" height="60" rx="5" fill="'+K+'"/><circle cx="60" cy="42" r="7" fill="#e3342f"/><circle cx="60" cy="60" r="7" fill="#f7c600"/><circle cx="60" cy="78" r="7" fill="#2fa84f"/>'));
+    case "merge":return svg(dia('<path d="M54 92 L54 38" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="54,24 42,42 66,42" fill="'+K+'"/><path d="M78 92 Q78 66 56 58" stroke="'+K+'" stroke-width="8" fill="none"/>'));
+    case "twoway":return svg(dia('<path d="M46 88 L46 44" stroke="'+K+'" stroke-width="8"/><polygon points="46,30 35,48 57,48" fill="'+K+'"/><path d="M74 32 L74 76" stroke="'+K+'" stroke-width="8"/><polygon points="74,90 63,72 85,72" fill="'+K+'"/>'));
+    case "curve":return svg(dia('<path d="M50 94 L50 66 Q50 48 70 42" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="86,36 66,30 72,52" fill="'+K+'"/>'));
+    case "tee":return svg(dia('<path d="M32 46 L88 46" stroke="'+K+'" stroke-width="13"/><path d="M60 46 L60 92" stroke="'+K+'" stroke-width="13"/>'));
+    case "cross":return svg(dia('<path d="M30 60 L90 60 M60 30 L60 90" stroke="'+K+'" stroke-width="13"/>'));
+    case "pedx":return svg(dia('<circle cx="60" cy="36" r="7" fill="'+K+'"/><path d="M60 44 L58 68 M59 50 L46 60 M59 50 L72 58 M58 68 L48 90 M58 68 L70 88" stroke="'+K+'" stroke-width="6.5" stroke-linecap="round" fill="none"/>'));
+    case "roadwork":return svg(dia('<text x="60" y="50" font-size="17" fill="'+K+'">ROAD</text><text x="60" y="68" font-size="17" fill="'+K+'">WORK</text><text x="60" y="86" font-size="17" fill="'+K+'">AHEAD</text>',"#f58220"));
+    case "nouturn":return svg(plate+'<path d="M46 88 L46 54 Q46 36 60 36 Q74 36 74 54 L74 62" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="74,80 62,60 86,60" fill="'+K+'"/>'+ban);
+    case "noleft":return svg(plate+'<path d="M72 90 L72 56 L48 56" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="30,56 50,43 50,69" fill="'+K+'"/>'+ban);
+    case "oneway":return svg('<rect x="4" y="34" width="112" height="52" rx="5" fill="'+K+'"/><polygon points="12,48 84,48 84,40 110,60 84,80 84,72 12,72" fill="'+W+'"/><text x="50" y="66" font-size="15" fill="'+K+'">ONE WAY</text>');
+    case "smv":return svg('<polygon points="60,10 112,104 8,104" fill="#8f1d14" stroke="#8f1d14" stroke-width="6" stroke-linejoin="round"/><polygon points="60,38 90,92 30,92" fill="#ff6a13"/>');
+  }
+  return "";
+}
+
+setPT();home();
+</script>
+</body>
+</html>
