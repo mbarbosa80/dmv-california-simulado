@@ -46,7 +46,7 @@ h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem)
 h2{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0;text-wrap:balance}
 p{margin:0}
 .pt{display:block;font-size:.8em;color:var(--muted);font-weight:400;margin-top:3px}
-body.nopt .pt{display:none}
+body.nopt .pt,body.nopt .ptin{display:none}
 .lead{color:var(--muted);max-width:60ch}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
 .facts div{padding:12px 10px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
@@ -101,6 +101,7 @@ th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu
 .fb{border-left:5px solid var(--good);background:var(--good-bg);border-radius:0 10px 10px 0;padding:11px 14px;font-size:.94rem}
 .fb.bad{border-color:var(--bad);background:var(--bad-bg)}
 .fb b{display:block}
+.fb .pt{color:inherit;opacity:.8}
 .actions{display:flex;gap:10px;align-items:stretch}
 .actions .cta{flex:1}
 .actions .ghost{flex:0 0 auto;font-size:.95rem;padding:0 16px;border-width:2px;border-radius:12px}
@@ -148,7 +149,7 @@ const Q=[];
 
 // ---------- data ----------
 function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)}
-const BANK=Q.map(r=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
+const BANK=Q.map((r,i)=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:EX[i]||r[6],ep:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
 const QUOTA={signs:3,signals:2,row:3,speed:3,lanes:3,turns:2,parking:3,freeway:2,safe:5,weather:2,sharing:3,alcohol:2,belts:1,admin:2};
 const CAT={signs:["Traffic signs","Placas"],signals:["Traffic signals","Semáforos"],row:["Right-of-way","Preferência"],speed:["Speed limits","Velocidade"],
   lanes:["Lanes and markings","Faixas e marcações"],turns:["Turns","Conversões"],parking:["Parking","Estacionamento"],freeway:["Freeways and passing","Freeway e ultrapassagem"],
@@ -257,7 +258,7 @@ function renderQ(){
   let h='<div class="status"><b>Question '+(S.pos+1)+' of '+n+'</b><span>'+
     (S.mode==="practice"?'Missed '+wrongSoFar+(S.review?'':' · '+(n-PASS)+' allowed')+' &nbsp;|&nbsp; ':'')+'<span id="clock"></span></span></div>'+
     '<div class="bar"><i style="width:'+(100*S.pos/n)+'%"></i></div>'+
-    '<span class="chip">'+esc(CAT[q.c][0])+' · '+esc(CAT[q.c][1])+'</span>'+
+    '<span class="chip">'+esc(CAT[q.c][0])+'<span class="ptin"> · '+esc(CAT[q.c][1])+'</span></span>'+
     (q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+
     '<p class="qtext">'+bi(q.q,q.qp)+'</p><div class="opts">';
   it.order.forEach((oi,k)=>{
@@ -269,7 +270,7 @@ function renderQ(){
   h+='</div>';
   if(reveal){
     const ok=it.pick===0;
-    h+='<div class="fb'+(ok?'':' bad')+'"><b>'+(ok?'Correct':'Incorrect')+(ok?' · Certo':' · Errado')+'</b>'+esc(q.e)+'</div>';
+    h+='<div class="fb'+(ok?'':' bad')+'"><b>'+(ok?'Correct':'Incorrect')+'<span class="ptin">'+(ok?' · Certo':' · Errado')+'</span></b>'+bi(q.e,q.ep)+'</div>';
   }
   const last=S.pos===n-1;
   h+='<div class="actions">'+
@@ -317,7 +318,7 @@ function finish(){
     wrong.forEach(x=>{const q=x.q;
       h+='<div class="rev">'+(q.s?'<div class="sign">'+sign(q.s)+'</div>':'')+'<div class="q">'+bi(q.q,q.qp)+'</div>'+
         (x.pick===null?'<div class="a no"><i>Your answer</i>Not answered<span class="pt">(Não respondida)</span></div>':'<div class="a no"><i>Your answer</i>'+bi(q.opts[x.pick][0],q.opts[x.pick][1])+'</div>')+
-        '<div class="a ok"><i>Correct answer</i>'+bi(q.opts[0][0],q.opts[0][1])+'</div><p class="note">'+esc(q.e)+'</p></div>'});
+        '<div class="a ok"><i>Correct answer</i>'+bi(q.opts[0][0],q.opts[0][1])+'</div><p class="note">'+bi(q.e,q.ep)+'</p></div>'});
     h+='</div>';
   }else h+='<div class="panel"><p>No mistakes on this one.<span class="pt">(Nenhum erro neste.)</span></p></div>';
   app.innerHTML=h;
