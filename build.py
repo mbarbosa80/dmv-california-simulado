@@ -4,7 +4,7 @@ import json, pathlib, re, subprocess, sys
 
 root = pathlib.Path(__file__).parent
 src = root / "src"
-qs = "\n".join((src / f).read_text(encoding="utf-8") for f in ("q1.js", "q2.js", "q3.js", "q4.js", "ex.js"))
+qs = "\n".join((src / f).read_text(encoding="utf-8") for f in ("q1.js", "q2.js", "q3.js", "q4.js", "fix.js", "ex.js"))
 html = (src / "app.html").read_text(encoding="utf-8")
 assert "/*__QUESTIONS__*/" in html
 out = html.replace("/*__QUESTIONS__*/", qs)
