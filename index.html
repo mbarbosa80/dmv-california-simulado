@@ -2341,12 +2341,12 @@ function finish(){
   const byCat={};S.items.forEach(x=>{const c=byCat[x.q.c]||(byCat[x.q.c]=[0,0]);c[1]++;if(x.pick===0)c[0]++});
   let h='<h1>'+(S.review?'Review finished':'Test results')+'<span class="pt" style="font-family:var(--body)">('+(S.review?'Revisão concluída':'Resultado do simulado')+')</span></h1>'+
     '<div class="panel"><div class="score"><div class="n">'+score+'<span>/'+n+'</span></div>'+
-    (S.review?'':'<span class="verdict '+(pass?'good':'bad')+'">'+(pass?'PASS · APROVADO':'FAIL · REPROVADO')+'</span>')+'</div>'+
+    (S.review?'':'<span class="verdict '+(pass?'good':'bad')+'">'+(pass?'PASS<span class="ptin"> · APROVADO</span>':'FAIL<span class="ptin"> · REPROVADO</span>')+'</span>')+'</div>'+
     '<p class="note">'+(S.review?'':'You needed '+need+' correct. You missed '+(n-score)+'; the limit is '+(n-PASS)+'. ')+'Time: '+clock(secs)+'.'+
     (S.review?'':'<span class="pt">(Eram necessários '+need+' acertos. Você errou '+(n-score)+'; o limite é '+(n-PASS)+'.)</span>')+'</p>'+
     '<div class="cats">'+Object.keys(byCat).map(c=>'<div><span>'+esc(CAT[c][0])+'</span><b class="'+(byCat[c][0]<byCat[c][1]?'miss':'')+'">'+byCat[c][0]+'/'+byCat[c][1]+'</b></div>').join("")+'</div></div>'+
     '<div class="row"><button class="cta" id="again" type="button">New test, new questions<small class="pt">(Novo simulado, novas questões)</small></button>'+
-    (wrong.length?'<button class="second" id="retry" type="button">Retry the '+wrong.length+' I missed<small class="pt">(Refazer as que errei)</small></button>':'')+'</div>';
+    (wrong.length?'<button class="second" id="retry" type="button">Retry the '+wrong.length+' I missed<small class="pt">(Refazer as que errei)</small></button>':'')+'<button class="second gohome" type="button">Back to the start page<small class="pt">(Voltar à página inicial)</small></button>'+'</div>';
   if(wrong.length){
     h+='<div class="panel"><h2>Questions to review<span class="pt">(Questões para revisar)</span></h2>';
     wrong.forEach(x=>{const q=x.q;
@@ -2355,7 +2355,9 @@ function finish(){
         '<div class="a ok"><i>Correct answer</i>'+bi(q.opts[0][0],q.opts[0][1])+'</div><p class="note">'+bi(q.e,q.ep)+'</p></div>'});
     h+='</div>';
   }else h+='<div class="panel"><p>No mistakes on this one.<span class="pt">(Nenhum erro neste.)</span></p></div>';
+  if(wrong.length>2)h+='<button class="second gohome" type="button">Back to the start page<small class="pt">(Voltar à página inicial)</small></button>';
   app.innerHTML=h;
+  app.querySelectorAll(".gohome").forEach(b=>b.onclick=home);
   $("#again").onclick=()=>start(wrap(buildTest()),false);
   const r=$("#retry");if(r)r.onclick=()=>start(wrap(shuffle(wrong.map(x=>x.q))),true);
   window.scrollTo(0,0);
