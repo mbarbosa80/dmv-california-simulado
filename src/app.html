@@ -150,12 +150,12 @@ const Q=[];
 
 // ---------- data ----------
 function hash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36)}
-const BANK=Q.map((r,i)=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:EX[i]||r[6],ep:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
-const QUOTA={signs:3,signals:2,row:3,speed:3,lanes:3,turns:2,parking:3,freeway:2,safe:5,weather:2,sharing:3,alcohol:2,belts:1,admin:2};
+const BANK=Q.map((r,i)=>({id:hash(r[1]+"|"+((r[7]||{}).s||"")),c:r[0],q:r[1],qp:r[2],opts:[r[3],r[4],r[5]],e:(r[7]||{}).e||EX[i]||r[6],ep:r[6],s:(r[7]||{}).s,t:(r[7]||{}).t}));
+const QUOTA={signs:3,signals:2,row:3,speed:3,lanes:3,turns:2,parking:3,freeway:2,safe:4,weather:2,sharing:3,alcohol:2,belts:1,admin:3};
 const CAT={signs:["Traffic signs","Placas"],signals:["Traffic signals","Semáforos"],row:["Right-of-way","Preferência"],speed:["Speed limits","Velocidade"],
   lanes:["Lanes and markings","Faixas e marcações"],turns:["Turns","Conversões"],parking:["Parking","Estacionamento"],freeway:["Freeways and passing","Freeway e ultrapassagem"],
   safe:["Safe driving","Direção segura"],weather:["Weather and night","Clima e noite"],sharing:["Sharing the road","Dividindo a via"],
-  alcohol:["Alcohol and drugs","Álcool e drogas"],belts:["Seat belts and children","Cinto e crianças"],admin:["DMV rules and collisions","Regras do DMV e colisões"]};
+  alcohol:["Alcohol and drugs","Álcool e drogas"],belts:["Seat belts and children","Cinto e crianças"],admin:["Rules, police stops and collisions","Regras, abordagem policial e colisões"]};
 const TOTAL=36, PASS=30;
 
 // ---------- storage (works without it) ----------
@@ -354,6 +354,16 @@ function sign(id){
     case "nouturn":return svg(plate+'<path d="M46 88 L46 54 Q46 36 60 36 Q74 36 74 54 L74 62" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="74,80 62,60 86,60" fill="'+K+'"/>'+ban);
     case "noleft":return svg(plate+'<path d="M72 90 L72 56 L48 56" stroke="'+K+'" stroke-width="9" fill="none"/><polygon points="30,56 50,43 50,69" fill="'+K+'"/>'+ban);
     case "oneway":return svg('<rect x="4" y="34" width="112" height="52" rx="5" fill="'+K+'"/><polygon points="12,48 84,48 84,40 110,60 84,80 84,72 12,72" fill="'+W+'"/><text x="50" y="66" font-size="15" fill="'+K+'">ONE WAY</text>');
+    case "laneends":return svg(dia('<path d="M46 92 L46 30" stroke="'+K+'" stroke-width="7" fill="none"/><path d="M74 92 L74 68 L60 46 L60 30" stroke="'+K+'" stroke-width="7" fill="none" stroke-linejoin="round"/>'));
+    case "slippery":return svg(dia('<rect x="45" y="30" width="30" height="20" rx="5" fill="'+K+'"/><rect x="49" y="24" width="22" height="10" rx="4" fill="'+K+'"/><rect x="44" y="46" width="7" height="10" rx="2" fill="'+K+'"/><rect x="69" y="46" width="7" height="10" rx="2" fill="'+K+'"/><path d="M48 60 q-9 8 0 16 q9 8 0 16 M72 60 q-9 8 0 16 q9 8 0 16" stroke="'+K+'" stroke-width="5" fill="none" stroke-linecap="round"/>'));
+    case "stopahead":return svg(dia('<path d="M60 52 L60 36" stroke="'+K+'" stroke-width="7"/><polygon points="60,22 49,38 71,38" fill="'+K+'"/><polygon points="53,58 67,58 77,68 77,82 67,92 53,92 43,82 43,68" fill="'+R+'" stroke="'+K+'" stroke-width="1.5"/>'));
+    case "yieldahead":return svg(dia('<path d="M60 52 L60 36" stroke="'+K+'" stroke-width="7"/><polygon points="60,22 49,38 71,38" fill="'+K+'"/><polygon points="40,58 80,58 60,94" fill="'+R+'" stroke="'+K+'" stroke-width="1.5"/><polygon points="51,64 69,64 60,80" fill="'+W+'"/>'));
+    case "winding":return svg(dia('<path d="M52 94 L52 84 Q52 74 62 68 Q72 62 64 52 Q58 46 60 38" stroke="'+K+'" stroke-width="8" fill="none" stroke-linecap="round"/><polygon points="62,20 49,38 71,40" fill="'+K+'"/>'));
+    case "divided":return svg(dia('<path d="M60 28 q-9 0 -9 10 l0 10 q0 6 9 6 q9 0 9 -6 l0 -10 q0 -10 -9 -10z" fill="'+K+'"/><path d="M40 40 L40 78" stroke="'+K+'" stroke-width="7"/><polygon points="40,92 30,74 50,74" fill="'+K+'"/><path d="M80 90 L80 52" stroke="'+K+'" stroke-width="7"/><polygon points="80,38 70,56 90,56" fill="'+K+'"/>'));
+    case "speed50":return svg('<rect x="20" y="6" width="80" height="108" rx="6" fill="'+W+'" stroke="'+K+'" stroke-width="4"/><text x="60" y="30" font-size="15" fill="'+K+'">SPEED</text><text x="60" y="47" font-size="15" fill="'+K+'">LIMIT</text><text x="60" y="98" font-size="50" fill="'+K+'">50</text>');
+    case "nopass":return svg('<polygon points="6,22 114,60 6,98" fill="'+Y+'" stroke="'+K+'" stroke-width="4" stroke-linejoin="round"/><text x="34" y="50" font-size="15" fill="'+K+'">NO</text><text x="44" y="66" font-size="13" fill="'+K+'">PASSING</text><text x="36" y="82" font-size="14" fill="'+K+'">ZONE</text>');
+    case "carpool":return svg('<rect x="10" y="6" width="100" height="108" rx="6" fill="'+W+'" stroke="'+K+'" stroke-width="4"/><rect x="16" y="12" width="88" height="38" rx="3" fill="'+K+'"/><polygon points="60,16 78,31 60,46 42,31" fill="none" stroke="'+W+'" stroke-width="4"/><text x="60" y="70" font-size="16" fill="'+K+'">CARPOOL</text><text x="60" y="87" font-size="13" fill="'+K+'">2 OR MORE</text><text x="60" y="104" font-size="13" fill="'+K+'">ONLY</text>');
+    case "noparking":return svg(plate+'<text x="60" y="84" font-size="70" fill="'+K+'">P</text>'+ban);
     case "smv":return svg('<polygon points="60,10 112,104 8,104" fill="#8f1d14" stroke="#8f1d14" stroke-width="6" stroke-linejoin="round"/><polygon points="60,38 90,92 30,92" fill="#ff6a13"/>');
   }
   return "";

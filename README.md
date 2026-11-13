@@ -3,7 +3,7 @@
 Simulator for the California Class C knowledge test.
 
 - 36 questions per test, 30 correct to pass, 3 choices per question (same as the adult original-license test)
-- Every test is a new random draw from a bank of 276 questions, in the DMV's mix of topics; questions you have not seen come first
+- Every test is a new random draw from a bank of 340 questions, in the DMV's mix of topics; questions you have not seen come first
 - English questions and answers, with a smaller Portuguese (PT-BR) translation in parentheses (can be switched off)
 - Practice mode (answer and explanation after each question) and Exam mode (results at the end)
 - Review of missed questions, saved in your browser
