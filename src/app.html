@@ -41,7 +41,8 @@ a{color:var(--accent)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;border-bottom:2px solid var(--ink)}
 .brand{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:.02em;text-transform:uppercase;background:none;border:0;padding:0;text-align:left}
 .brand small{display:block;font-family:var(--body);font-weight:400;font-size:.74rem;color:var(--muted);text-transform:none;letter-spacing:0}
-.ghost{background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.86rem;color:var(--muted)}
+.ghost[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:700}
+.ghost{white-space:nowrap;background:none;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.86rem;color:var(--muted)}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(1.7rem,6vw,2.3rem);line-height:1.1;margin:6px 0 0;text-wrap:balance}
 h2{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:0;text-wrap:balance}
 p{margin:0}
@@ -130,8 +131,8 @@ footer{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);paddi
 <body>
 <div class="wrap">
   <div class="top">
-    <button class="brand" id="home" type="button">California DMV Practice Test<small>Simulado da prova teórica · Class C</small></button>
-    <button class="ghost" id="ptToggle" type="button" aria-pressed="true">PT on</button>
+    <button class="brand" id="home" type="button">California DMV Practice Test<small>Class C knowledge test<span class="ptin"> · Simulado da prova teórica</span></small></button>
+    <button class="ghost" id="ptToggle" type="button" aria-pressed="false" title="Show or hide the Portuguese translation">Português: OFF</button>
   </div>
   <main id="app" class="wrap" style="padding:0;gap:18px"></main>
   <footer>
@@ -194,9 +195,9 @@ function buildTest(){
 function wrap(list){return list.map(q=>({q,order:shuffle([0,1,2]),pick:null}))}
 
 // ---------- state ----------
-let prefs=Object.assign({mode:"practice",limit:0,pt:true},load("prefs",{}));
+let prefs=Object.assign({mode:"practice",limit:0,pt:false},load("prefs",{}));
 let S=null,tick=null;
-function setPT(){document.body.classList.toggle("nopt",!prefs.pt);const b=$("#ptToggle");b.setAttribute("aria-pressed",prefs.pt);b.textContent=prefs.pt?"PT on":"PT off"}
+function setPT(){document.body.classList.toggle("nopt",!prefs.pt);const b=$("#ptToggle");b.setAttribute("aria-pressed",prefs.pt);b.textContent=prefs.pt?"Português: ON":"Português: OFF"}
 $("#ptToggle").onclick=()=>{prefs.pt=!prefs.pt;save("prefs",prefs);setPT()};
 $("#home").onclick=()=>{if(S&&!S.done){S.askQuit=true;renderQ()}else home()};
 
