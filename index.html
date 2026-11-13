@@ -2237,7 +2237,7 @@ $("#home").onclick=()=>{if(S&&!S.done){S.askQuit=true;renderQ()}else home()};
 // ---------- home ----------
 function home(){
   stopClock();S=null;
-  const hist=load("history",[]),missed=load("missed",[]).filter(id=>BANK.some(q=>q.id===id)),seen=load("seen",[]).length;
+  const hist=load("history",[]),missed=load("missed",[]).filter(id=>BANK.some(q=>q.id===id)),seen=load("seen",[]).filter(id=>BANK.some(q=>q.id===id)).length;
   const seg=(key,val,en,pt)=>'<button type="button" data-k="'+key+'" data-v="'+val+'" aria-pressed="'+(String(prefs[key])===String(val))+'">'+esc(en)+'<small class="pt">('+esc(pt)+')</small></button>';
   app.innerHTML=
   '<h1>Knowledge test simulator</h1>'+
@@ -2336,7 +2336,7 @@ function finish(){
   let missed=new Set(load("missed",[]));
   S.items.forEach(x=>{if(x.pick===0)missed.delete(x.q.id);else missed.add(x.q.id)});
   save("missed",[...missed]);
-  if(!S.review){const hist=load("history",[]);hist.push({n:hist.length+1,score,total:n,pass,secs:Math.round(secs),mode:S.mode});save("history",hist.slice(-40))}
+  if(!S.review){const hist=load("history",[]);hist.push({n:(hist.length?hist[hist.length-1].n:0)+1,score,total:n,pass,secs:Math.round(secs),mode:S.mode});save("history",hist.slice(-40))}
   const wrong=S.items.filter(x=>x.pick!==0);
   const byCat={};S.items.forEach(x=>{const c=byCat[x.q.c]||(byCat[x.q.c]=[0,0]);c[1]++;if(x.pick===0)c[0]++});
   let h='<h1>'+(S.review?'Review finished':'Test results')+'<span class="pt" style="font-family:var(--body)">('+(S.review?'Revisão concluída':'Resultado do simulado')+')</span></h1>'+
